@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="kr.edcan.billim" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppThemeWithActionBar" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DeveloperInfo"
+            android:label="@string/title_activity_developer_info"
+            android:parentActivityName=".SettingActivity" >
+        </activity>
+        <activity
+            android:name=".PostActivity"
+            android:label="@string/title_activity_post"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
+            android:name=".SelectActivity"
+            android:label="@string/title_activity_select"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" >
+        </activity>
+        <activity
+            android:name=".ViewActivity"
+            android:label="@string/title_activity_view"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".MyPageActivity"
+            android:label="@string/title_activity_my_page"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".UsedHistoryActivity"
+            android:label="@string/title_activity_used_history"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".SettingActivity"
+            android:label="환경설정"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+    </application>
+
+</manifest>

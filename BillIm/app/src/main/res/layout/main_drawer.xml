@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EFEAE9"
+    android:orientation="vertical">
+    <!-- 헤더 -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#D0C2C0"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <RelativeLayout
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerVertical="true">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/profile_actionbar" />
+                <TextView
+                    android:textColor="#8d6e63"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/profile_name"
+                    android:text="구창림"
+                    android:textSize="13dp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:textColor="#8d6e63"
+                    android:textSize="12dp"
+                    android:layout_marginTop="3dp"
+                    android:id="@+id/profile_state"
+                    android:text="4번 빌림 5번 빌려줌 3번 교환"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#c9bcb7" />
+
+    <com.rey.material.widget.Spinner
+        android:id="@+id/groupSelector"
+        style="@style/Material.Widget.Spinner.Light"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:spn_arrowSwitchMode="true"
+        app:spn_arrowAnimClockwise="true"
+        android:background="#D0C2C0"
+        android:padding="5dp"
+        app:rd_style="@style/Material.Drawable.Ripple.Wave.Light"></com.rey.material.widget.Spinner>
+    <ListView
+        android:id="@+id/drawer_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+</LinearLayout>

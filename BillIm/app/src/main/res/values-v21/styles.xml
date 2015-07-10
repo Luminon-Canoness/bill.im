@@ -1,0 +1,16 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">#A4847F</item>
+        <!--<item name="actionBarSize">150dip</item>-->
+    </style>
+    <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:statusBarColor">#A4847F</item>
+        <item name="android:actionBarStyle">@style/actionBarStyle</item>
+    </style>
+    <style name="actionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:colorBackground">#D4C6C3</item>
+    </style>
+</resources>
