@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="#EFEAE9"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_marginLeft="15dp"
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:text="빌려주기"
+        android:textColor="#916C63"
+        android:textSize="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#d7ccc8"></LinearLayout>
+
+    <TextView
+        android:layout_marginLeft="15dp"
+        android:id="@+id/dialog_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="15dp"
+        android:text="해당 물건을 빌려주시겠습니까?\n빌려주기를 누르면 Bill.IM 이용 내역에서 상태를 확인할 수 있습니다."
+        android:textColor="#916C63" />
+
+    <RelativeLayout
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.rey.material.widget.Button
+            android:id="@+id/confirm_button"
+            android:text="빌려주기"
+            android:textSize="16dp"
+            android:textColor="#6d4c41"
+            android:background="@android:color/transparent"
+            style="@style/Material.Drawable.Ripple.Touch.Light"
+            android:layout_width="70dp"
+            android:layout_alignParentEnd="true"
+            android:layout_height="30dp"></com.rey.material.widget.Button>
+
+        <com.rey.material.widget.Button
+            android:id="@+id/cancel_button"
+            android:text="취소"
+            android:textSize="16dp"
+            android:textColor="#8d6e63"
+            android:background="@android:color/transparent"
+            style="@style/Material.Drawable.Ripple.Touch.Light"
+            android:layout_width="70dp"
+            android:layout_toLeftOf="@+id/confirm_button"
+            android:layout_height="30dp"></com.rey.material.widget.Button>
+    </RelativeLayout>
+</LinearLayout>

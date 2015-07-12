@@ -8,7 +8,7 @@
         <item name="colorPrimary">#d7ccc8</item>
 
         <!-- colorPrimaryDark is used for the status bar -->
-        <item name="colorPrimaryDark"> #a1887f </item>
+        <item name="colorPrimaryDark">#a1887f</item>
 
         <!-- colorAccent is used as the default value for colorControlActivated
              which is used to tint widgets -->
@@ -21,6 +21,7 @@
         <!-- You can also set colorControlNormal, colorControlActivated
              colorControlHighlight & colorSwitchThumbNormal. -->
     </style>
+
     <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -29,15 +30,16 @@
         <item name="colorPrimary">#d7ccc8</item>
 
         <!-- colorPrimaryDark is used for the status bar -->
-        <item name="colorPrimaryDark"> #a1887f </item>
-
-        <!-- colorAccent is used as the default value for colorControlActivated
-             which is used to tint widgets -->
+        <item name="colorPrimaryDark">#a1887f</item>
+    </style>
+    <!-- colorAccent is used as the default value for colorControlActivated
+         which is used to tint widgets -->
+    <style name="spinnerStyle" parent="@style/Material.Widget.Spinner.Light">
         <item name="colorAccent">#6d4c41</item>
         <item name="colorControlActivated">#6d4c41</item>
         <item name="colorControlNormal">#6d4c41</item>
         <item name="colorControlHighlight">#6d4c41</item>
         <item name="colorSwitchThumbNormal">#6d4c41</item>
-
     </style>
+
 </resources>

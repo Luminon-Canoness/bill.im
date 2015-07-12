@@ -1,88 +1,119 @@
 package kr.edcan.billim;
 
 import android.app.Activity;
-import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class SelectActivity extends Activity implements View.OnClickListener {
+
+public class SelectActivity extends Activity{
 
     int shareType;
-    LinearLayout pilgigu, machine, food, cloth, book, etc;
-    int i;
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor("#A4847F"));
-        }
-        pilgigu = (LinearLayout) findViewById(R.id.pilgigu);
-        machine = (LinearLayout) findViewById(R.id.machine);
-        food = (LinearLayout) findViewById(R.id.food);
-        cloth = (LinearLayout) findViewById(R.id.cloth);
-        book = (LinearLayout) findViewById(R.id.book);
-        etc = (LinearLayout) findViewById(R.id.etc);
-        pilgigu.setOnClickListener(this);
-        etc.setOnClickListener(this);
-        machine.setOnClickListener(this);
-        food.setOnClickListener(this);
-        cloth.setOnClickListener(this);
-        book.setOnClickListener(this);
         shareType = getIntent().getIntExtra("ShareType", -1);
+        setSelectList();
     }
 
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.pilgigu: {
-                i = 0;
-                break;
+    public void setSelectList() {
+        listView = (ListView) findViewById(R.id.select_dialog_listview);
+        ArrayList<SelecterData> arrayList = new ArrayList<>();
+        arrayList.add(new SelecterData(getApplicationContext(), R.drawable.ic_pillgigu, "필기구"));
+        arrayList.add(new SelecterData(getApplicationContext(), R.drawable.ic_machine, "전자제품"));
+        arrayList.add(new SelecterData(getApplicationContext(), R.drawable.ic_food, "음식 및 음료"));
+        arrayList.add(new SelecterData(getApplicationContext(), R.drawable.ic_cloth, "의류"));
+        arrayList.add(new SelecterData(getApplicationContext(), R.drawable.ic_books, "책 및 문서"));
+        arrayList.add(new SelecterData(getApplicationContext(), R.drawable.ic_etc, "기타"));
+        SelecterAdapter selecterAdapter = new SelecterAdapter(getApplicationContext(), arrayList);
+        listView.setAdapter(selecterAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), PostActivity.class);
+                intent.putExtra("Type", position);
+                intent.putExtra("ShareType", shareType);
+                finishActivity(1000);
+                startActivity(intent);
+                finish();
             }
-            case R.id.machine: {
-                i = 1;
-                break;
-            }
-            case R.id.food: {
-                i = 2;
-                break;
-            }
-            case R.id.cloth: {
-                i = 3;
-                break;
-            }
-            case R.id.book: {
-                i = 4;
-                break;
-            }
-            case R.id.etc: {
-                i = 5;
-                break;
-            }
+        });
+    }
+
+
+    class SelecterData {
+        private int icon;
+        private String content;
+        public SelecterData(Context context, int icon_, String content_) {
+            icon = icon_;
+            content = content_;
         }
-        Intent intent = new Intent(getApplicationContext(), PostActivity.class);
-        intent.putExtra("Type", i);
-        intent.putExtra("ShareType", shareType);
-        startActivity(intent);
-        finishActivity(1234);
-        finish();
+
+        public int getIcon() {
+            return icon;
+        }
+
+        public String getContent() {
+            return content;
+        }
+    }
+
+    class SelecterAdapter extends ArrayAdapter<SelecterData> {
+        // 레이아웃 XML을 읽어들이기 위한 객체
+        private LayoutInflater mInflater;
+
+        public SelecterAdapter(Context context, ArrayList<SelecterData> object) {
+            // 상위 클래스의 초기화 과정
+            // context, 0, 자료구조
+            super(context, 0, object);
+            mInflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        // 보여지는 스타일을 자신이 만든 xml로 보이기 위한 구문
+        @Override
+        public View getView(int position, View v, ViewGroup parent) {
+            View view = null;
+            // 현재 리스트의 하나의 항목에 보일 컨트롤 얻기
+            if (v == null) {
+                // XML 레이아웃을 직접 읽어서 리스트뷰에 넣음
+                view = mInflater.inflate(R.layout.listview_select_content, null);
+            } else {
+                view = v;
+            }
+            // 자료를 받는다.
+            final SelecterData data = this.getItem(position);
+            if (data != null) {
+                //화면 출력
+                TextView name = (TextView) view.findViewById(R.id.select_text);
+                ImageView icon = (ImageView) view.findViewById(R.id.select_icon);
+                name.setText(data.getContent());
+                icon.setImageResource(data.getIcon());
+            }
+            return view;
+        }
     }
 }

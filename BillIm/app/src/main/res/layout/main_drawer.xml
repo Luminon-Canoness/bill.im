@@ -5,7 +5,7 @@
     android:background="#EFEAE9"
     android:orientation="vertical">
     <!-- 헤더 -->
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:background="#D0C2C0"
@@ -14,36 +14,39 @@
         android:paddingRight="10dp">
 
         <RelativeLayout
-            android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="5dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/profile_actionbar" />
+
                 <TextView
-                    android:textColor="#8d6e63"
-                    android:layout_marginTop="10dp"
                     android:id="@+id/profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="구창림"
-                    android:textSize="13dp"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
                     android:textColor="#8d6e63"
-                    android:textSize="12dp"
-                    android:layout_marginTop="3dp"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+
+                <TextView
                     android:id="@+id/profile_state"
-                    android:text="4번 빌림 5번 빌려줌 3번 교환"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="4번 빌림 5번 빌려줌 3번 교환"
+                    android:textColor="#8d6e63"
+                    android:textSize="12dp" />
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
@@ -53,16 +56,31 @@
         android:layout_height="2dp"
         android:background="#c9bcb7" />
 
-    <com.rey.material.widget.Spinner
-        android:id="@+id/groupSelector"
-        style="@style/Material.Widget.Spinner.Light"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:spn_arrowSwitchMode="true"
-        app:spn_arrowAnimClockwise="true"
         android:background="#D0C2C0"
-        android:padding="5dp"
-        app:rd_style="@style/Material.Drawable.Ripple.Wave.Light"></com.rey.material.widget.Spinner>
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#c9bcb7"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"></LinearLayout>
+
+        <com.rey.material.widget.Spinner
+            android:id="@+id/groupSelector"
+            style="@style/spinnerStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            app:rd_style="@style/Material.Drawable.Ripple.Wave.Light"
+            app:spn_arrowAnimClockwise="true"
+            app:spn_arrowSwitchMode="true"
+            app:spn_dividerColor="@android:color/transparent"></com.rey.material.widget.Spinner>
+    </LinearLayout>
+
     <ListView
         android:id="@+id/drawer_listview"
         android:layout_width="match_parent"

@@ -37,6 +37,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="샤프심 0.5"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:textColor="#6d4c41"
                     android:textSize="20dp"/>
                 <TextView
@@ -45,6 +47,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="필기구"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:textSize="10dp"/>
                 <TextView
                     android:id="@+id/id_value"
@@ -57,21 +61,20 @@
             android:layout_width="1dp"
             android:layout_weight="2.1"
             android:layout_height="match_parent">
-            <RelativeLayout
-                android:padding="2dp"
-                android:background="@drawable/round_square"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true">
-                <TextView
-                    android:textColor="#99776F"
-                    android:id="@+id/confirm"
-                    android:textSize="10dp"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="빌려주세요"/>
-            </RelativeLayout>
+           <FrameLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent">
+               <ImageView
+                   android:src="@drawable/ic_mode_status"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent" />
+               <TextView
+                   android:id="@+id/confirm"
+                   android:gravity="center"
+                   android:textColor="#6d4c41"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent" />
+           </FrameLayout>
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

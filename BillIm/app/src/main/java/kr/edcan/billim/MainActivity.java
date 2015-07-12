@@ -1,17 +1,21 @@
 package kr.edcan.billim;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,12 +50,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setDefault();
         setNavigationBar();
         setArrayList();
+        setCategorySelect();
         no_billim = (TextView) findViewById(R.id.no_billim);
         sharedPreferences = getSharedPreferences("Billim", 0);
         editor = sharedPreferences.edit();
 
-//        categorymenu = (ImageView) findViewById(R.id.category_select);
-//        categorymenu.setOnClickListener(this);
         BillimButton = (FloatingActionButton) findViewById(R.id.billim_post);
         BillimButton.setOnClickListener(this);
         TradeButton = (FloatingActionButton) findViewById(R.id.trade_post);
@@ -100,7 +103,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     break;
                 }
             }
-            addDataToArrayList(type_icon, sharedPreferences.getString("name" + j, "" + 0), sharedPreferences.getString("comment" + j, "" + 0), (sharedPreferences.getInt("BorrowType" + j, -1) == 0) ? "빌려주세요" : "교환해요", sharedPreferences.getInt("IDValue" + j, 1000001));
+            addDataToArrayList(type_icon, sharedPreferences.getString("name" + j, "" + 0), sharedPreferences.getString("comment" + j, "" + 0), (sharedPreferences.getInt("BorrowType" + j, -1) == 0) ? "빌림" : "교환", sharedPreferences.getInt("IDValue" + j, 1000001));
         }
     }
 
@@ -114,27 +117,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     public void setArrayList() {
-//        groupList = new ArrayList<>();
-//        childList = new ArrayList<>();
-//        childListContent = new ArrayList<>();
-//        drawer_expand_listview = (ExpandableListView) findViewById(R.id.drawer_expand_listview);
-//        drawer_expand_listview.setAdapter(new ExpandAdapter(this, groupList, childList));
-//        groupList.add("선린인터넷고등학교");
-//        childListContent.add("EDCAN");
-//        childListContent.add("한국디지털미디어고등학교");
-//        childList.add(childListContent);
-//        childList.add(childListContent);
-//        drawer_expand_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                editor.putString("Group", view.findViewById(R.id.childName).toString());
-//                Toast(view.findViewById(R.id.childName).toString(),1);
-//            }
-//        });
-
         group_selector = (Spinner) findViewById(R.id.groupSelector);
         groupList = new ArrayList<>();
-        String[] group = {"선린인터넷고등학교","선린인터넷고등학교","선린인터넷고등학교","선린인터넷고등학교"};
+        String[] group = {"선린인터넷고등학교","EDCAN","1학년5반","ㅁㄴㅇㄹ"};
         for(int i=0;i<group.length;i++){
             groupList.add(group[i]);
         }
@@ -148,8 +133,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView s = (TextView) view.findViewById(R.id.id_value);
-                if (position != 0) Toast(s.getText().toString(), 0);
+                if (position != 0) {
+                    Intent viewIntent = new Intent(getApplicationContext(), ViewActivity.class);
+                    viewIntent.putExtra("position", position);
+                    startActivity(viewIntent);
+                };
             }
         });
     }
@@ -193,27 +181,155 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         });
     }
 
+    public void setCategorySelect(){
+        final Spinner categorySelect = (Spinner)findViewById(R.id.main_spinner);
+        SpinnerAdapter spinnerAdapter = ArrayAdapter.createFromResource(MainActivity.this, R.array.category_array, R.layout.spinner_textstyle);
+        categorySelect.setAdapter(spinnerAdapter);
+        categorySelect.setOnItemClickListener(new Spinner.OnItemClickListener() {
+            @Override
+            public boolean onItemClick(Spinner spinner, View view, int i, long l) {
+                // spinner.getSelectedItem()로 터치된 인자값을 받아옵니다
+                return true;
+            }
+        });
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.billim_post: {
                 Intent post = new Intent(getApplicationContext(), SelectActivity.class);
                 post.putExtra("ShareType", 0);
-                startActivityForResult(post, 1234);
+                startActivityForResult(post, 1000);
                 break;
             }
             case R.id.trade_post: {
-//                Intent post = new Intent(getApplicationContext(), SelectActivity.class);
-//                post.putExtra("ShareType", 1);
-//                startActivityForResult(post, 1234);
-//                break;
-                Intent asdf = new Intent(getApplicationContext(), ViewActivity.class);
-                startActivity(asdf);
+                Intent post = new Intent(getApplicationContext(), SelectActivity.class);
+                post.putExtra("ShareType", 1);
+                startActivityForResult(post,1000);
+                break;
             }
-//            case R.id.category_select: {
-//                Intent list_category =  new Intent(getApplicationContext(), SelectActivity.class);
-//                startActivityForResult(list_category,1234);
-//            }
         }
     }
+    class CData {
+        private int icon, value_id;
+        private String confirm;
+        private String content_label;
+        private String description;
+
+        public CData(Context context, int icon_,  String content_label_, String description_, String confirm_, int value_id_) {
+            icon = icon_;
+            confirm = confirm_;
+            content_label = content_label_;
+            description = description_;
+            value_id = value_id_;
+        }
+
+        public int getValue_id() {return value_id;}
+        public int getIcon() {
+            return icon;
+        }
+        public String getConfirm() {
+            return confirm;
+        }
+        public String getContent_label() {
+            return content_label;
+        }
+        public String getDescription() {
+            return description;
+        }
+    }
+    class NavDrawerAdapter extends ArrayAdapter<NavDrawData> {
+        // 레이아웃 XML을 읽어들이기 위한 객체
+        private LayoutInflater mInflater;
+
+        public NavDrawerAdapter(Context context, ArrayList<NavDrawData> object) {
+            // 상위 클래스의 초기화 과정
+            // context, 0, 자료구조
+            super(context, 0, object);
+            mInflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        // 보여지는 스타일을 자신이 만든 xml로 보이기 위한 구문
+        @Override
+        public View getView(int position, View v, ViewGroup parent) {
+            View view = null;
+            // 현재 리스트의 하나의 항목에 보일 컨트롤 얻기
+            if (v == null) {
+                // XML 레이아웃을 직접 읽어서 리스트뷰에 넣음
+                view = mInflater.inflate(R.layout.listview_drawer_content, null);
+            } else {
+                view = v;
+            }
+            // 자료를 받는다.
+            final NavDrawData data = this.getItem(position);
+            if (data != null) {
+                //화면 출력
+                TextView name = (TextView) view.findViewById(R.id.navlist_text);
+                ImageView icon = (ImageView) view.findViewById(R.id.navlist_icon);
+                name.setText(data.getList());
+                icon.setImageResource(data.getIcon());
+
+            }
+            return view;
+        }
+    }
+    class DataAdapter extends ArrayAdapter<CData> {
+        // 레이아웃 XML을 읽어들이기 위한 객체
+        private LayoutInflater mInflater;
+
+        public DataAdapter(Context context, ArrayList<CData> object) {
+            // 상위 클래스의 초기화 과정
+            // context, 0, 자료구조
+            super(context, 0, object);
+            mInflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        // 보여지는 스타일을 자신이 만든 xml로 보이기 위한 구문
+        @Override
+        public View getView(int position, View v, ViewGroup parent) {
+            View view = null;
+            // 현재 리스트의 하나의 항목에 보일 컨트롤 얻기
+            if (v == null) {
+                // XML 레이아웃을 직접 읽어서 리스트뷰에 넣음
+                view = mInflater.inflate(R.layout.listview_main_content, null);
+            } else {
+                view = v;
+            }
+            // 자료를 받는다.
+            final CData data = this.getItem(position);
+            if (data != null) {
+                //화면 출력
+                TextView name = (TextView) view.findViewById(R.id.name);
+                TextView description = (TextView) view.findViewById(R.id.description);
+                TextView confirm = (TextView) view.findViewById(R.id.confirm);
+                TextView value_id = (TextView) view.findViewById(R.id.id_value);
+                ImageView logo = (ImageView) view.findViewById(R.id.icon);
+                name.setText(data.getContent_label());
+                description.setText(data.getDescription());
+                logo.setImageResource(data.getIcon());
+                confirm.setText(data.getConfirm());
+                value_id.setText(data.getValue_id() + "");
+            }
+            return view;
+        }
+    }
+    class NavDrawData {
+        private String List;
+        private int icon;
+
+        public NavDrawData(Context context, String List_, int icon_) {
+            List = List_;
+            icon = icon_;
+        }
+        public String getList() {
+            return List;
+        }
+
+        public int getIcon(){
+            return icon;
+        }
+    }
+
 }

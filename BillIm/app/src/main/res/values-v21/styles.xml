@@ -4,7 +4,10 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:statusBarColor">#A4847F</item>
-        <!--<item name="actionBarSize">150dip</item>-->
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">#d7ccc8</item>
+        <item name="colorPrimaryDark"> #a1887f </item>
+
     </style>
     <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:statusBarColor">#A4847F</item>
@@ -12,5 +15,14 @@
     </style>
     <style name="actionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:colorBackground">#D4C6C3</item>
+    </style>
+    <style name="spinnerStyle" parent="@style/Material.Widget.Spinner">
+        <!--<item name="colorAccent">@android:color/transparent</item>-->
+        <!--<item name="colorControlActivated">@android:color/transparent</item>-->
+        <!--<item name="colorControlNormal">@android:color/transparent</item>-->
+        <!--<item name="colorControlHighlight">@android:color/transparent</item>-->
+    </style>
+    <style name="switcherStyle" parent="@style/Material.Widget.Switch">
+        <item name="colorSwitchThumbNormal">#FFFFFF</item>
     </style>
 </resources>
