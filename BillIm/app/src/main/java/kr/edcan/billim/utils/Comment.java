@@ -1,4 +1,4 @@
-package kr.edcan.billim;
+package kr.edcan.billim.utils;
 
 /**
  * Created by kotohana5706 on 15. 7. 13.

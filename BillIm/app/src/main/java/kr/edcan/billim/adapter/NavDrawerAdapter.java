@@ -1,4 +1,4 @@
-package kr.edcan.billim;
+package kr.edcan.billim.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,10 +10,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import kr.edcan.billim.R;
+
 /**
  * Created by kotohana5706 on 15. 7. 13.
  */
-class NavDrawerAdapter extends ArrayAdapter<NavDrawData> {
+public class NavDrawerAdapter extends ArrayAdapter<NavDrawData> {
     // 레이아웃 XML을 읽어들이기 위한 객체
     private LayoutInflater mInflater;
 

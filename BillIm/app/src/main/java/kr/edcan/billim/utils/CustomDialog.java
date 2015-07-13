@@ -1,4 +1,4 @@
-package kr.edcan.billim;
+package kr.edcan.billim.utils;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.rey.material.widget.Button;
+
+import kr.edcan.billim.R;
 
 
 /**

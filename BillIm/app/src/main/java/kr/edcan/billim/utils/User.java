@@ -1,4 +1,4 @@
-package kr.edcan.billim;
+package kr.edcan.billim.utils;
 
 import java.util.List;
 

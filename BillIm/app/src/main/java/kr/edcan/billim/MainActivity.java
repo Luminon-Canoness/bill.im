@@ -3,11 +3,15 @@ package kr.edcan.billim;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,6 +28,15 @@ import com.rey.material.widget.Spinner;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.edcan.billim.adapter.CData;
+import kr.edcan.billim.adapter.DataAdapter;
+import kr.edcan.billim.adapter.NavDrawData;
+import kr.edcan.billim.adapter.NavDrawerAdapter;
+import kr.edcan.billim.utils.Article;
+import kr.edcan.billim.utils.BillimService;
+import kr.edcan.billim.utils.DownloadImageTask;
+import kr.edcan.billim.utils.Group;
+import kr.edcan.billim.utils.User;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -38,12 +51,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     ArrayList<NavDrawData> navigtionBar;
     ArrayList<CData> arrayList;
     ArrayList<String> groupList = null;
-
+    protected String photo, phone, out,description;
+    protected int give, take, exchange;
     int icon[];
-    TextView username;
+    TextView username,state;
     Spinner group_selector, categorySelect;
     FloatingActionButton BillimButton, TradeButton;
-    ImageView drawermenu;
+    ImageView drawermenu, profilePhoto;
     BillimService service;
     String apikey;
     public static Activity activity;
@@ -64,6 +78,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawermenu = (ImageView) findViewById(R.id.drawer_menu);
         username = (TextView) findViewById(R.id.profile_name);
+        state = (TextView)findViewById(R.id.profile_state);
+        profilePhoto = (ImageView)findViewById(R.id.profile_photo);
         username.setText(sharedPreferences.getString("Username", "Error"));
         apikey = sharedPreferences.getString("apikey", "");
         // icon settings
@@ -99,11 +115,30 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         TradeButton.setOnClickListener(this);
         // API fetch
         // 1은 현재 그룹 번호로 바꿔줘야됨 수고
+        service.userSelfInfo(apikey, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                photo = user.photo;
+                phone = user.phone;
+                description = user.description;
+                give = user.give;
+                take = user.take;
+                exchange = user.exchange;
+                state.setText(take + "번 빌림 " + give + "번 빌려줌 " + exchange + "번 교환");
+                new DownloadImageTask(profilePhoto).execute(photo);
+                Bitmap bitmap = ((BitmapDrawable)profilePhoto.getDrawable()).getBitmap();
+                profilePhoto.setImageBitmap(getRoundedShape(bitmap));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
         service.articleList(1, 100000000, new Callback<List<Article>>() {
             @Override
             public void success(List<Article> articles, Response response) {
                 for (Article article : articles) {
-                    Log.e("name", article.name);
                     addDataToArrayList((icon.length > article.category) ? icon[article.category] : icon[0], article.name, article.description, (article.type == 0) ? "빌림" : "교환", article.id);
                 }
                 list.setAdapter(new DataAdapter(MainActivity.this, arrayList));
@@ -122,7 +157,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void failure(RetrofitError error) {
                 Toast("어플리케이션 오류(" + error.getResponse().getStatus() + ")가 발생하였습니다", 0);
-
             }
         });
     }
@@ -196,12 +230,31 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void Toast(String s, int length) {
         Toast.makeText(getApplicationContext(), s, (length == 0) ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG).show();
     }
+    public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
+        int targetWidth = 50;
+        int targetHeight = 50;
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
+                targetHeight,Bitmap.Config.ARGB_8888);
 
+        Canvas canvas = new Canvas(targetBitmap);
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2,
+                ((float) targetHeight - 1) / 2,
+                (Math.min(((float) targetWidth),
+                        ((float) targetHeight)) / 2),
+                Path.Direction.CCW);
+
+        canvas.clipPath(path);
+        Bitmap sourceBitmap = scaleBitmapImage;
+        canvas.drawBitmap(sourceBitmap,
+                new Rect(0, 0, sourceBitmap.getWidth(),
+                        sourceBitmap.getHeight()),
+                new Rect(0, 0, targetWidth, targetHeight), null);
+        return targetBitmap;
+    }
     public void addDataToArrayList(int icon, String title, String description, String confirm, int value_id) {
         arrayList.add(new CData(getApplicationContext(), icon, title, description, confirm, value_id));
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

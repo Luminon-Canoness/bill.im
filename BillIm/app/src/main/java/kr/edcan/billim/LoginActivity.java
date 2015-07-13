@@ -2,12 +2,10 @@ package kr.edcan.billim;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -20,11 +18,11 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.rey.material.widget.ProgressView;
-import com.rey.material.widget.SnackBar;
 
 import java.util.Arrays;
 
+import kr.edcan.billim.utils.BillimService;
+import kr.edcan.billim.utils.User;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -36,7 +34,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     protected CallbackManager callbackManager;
     protected AccessTokenTracker accessTokenTracker;
     protected AccessToken accessToken;
-    protected String apikey;
+    protected String apikey,out;
+    protected boolean enabled;
     protected User user;
     protected BillimService service;
     SharedPreferences sharedPreferences;
@@ -105,22 +104,25 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     @Override
                     public void failure(RetrofitError error) {
                         Log.e("kr.kkiro.httptest", error.getMessage());
-                        Toast.makeText(getApplicationContext(), "Failed to Log-In. Please check your username or password.", Toast.LENGTH_SHORT).show();
+                        Toast("로그인에 실패하였습니다",0);
                     }
 
                     @Override
                     public void success(User user, Response response) {
                         Log.i("kr.kkiro.httptest", "Code" + response.getStatus());
                         LoginActivity.this.user = user;
-                        apikey = user.token;
-                        String out = user.name;
-                        Log.e("kr.kkiro.httptest", apikey);
-                        editor.putString("Username", out);
-                        editor.putString("apikey", apikey);
-                        editor.commit();
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        if (user.enabled == false) {
+                            Toast("정지된 사용자입니다. 관리자에게 문의해주세요", 0);
+                        } else {
+                            apikey = user.token;
+                            out = user.name;
+                            editor.putString("Username", out);
+                            editor.putString("apikey", apikey);
+                            editor.commit();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                 });
             }
@@ -153,6 +155,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         if(accessTokenTracker != null) accessTokenTracker.stopTracking();
     }
 
+    public void Toast(String s, int length){
+        Toast.makeText(getApplicationContext(),s,(length==0)?Toast.LENGTH_SHORT:Toast.LENGTH_LONG).show();
+    }
     @Override
     public void onClick(View v) {
             SignIn();

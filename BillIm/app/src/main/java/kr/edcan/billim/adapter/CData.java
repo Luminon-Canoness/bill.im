@@ -1,11 +1,11 @@
-package kr.edcan.billim;
+package kr.edcan.billim.adapter;
 
 import android.content.Context;
 
 /**
  * Created by kotohana5706 on 15. 7. 13.
  */
-class CData {
+public class CData {
     private int icon, value_id;
     private String confirm;
     private String content_label;

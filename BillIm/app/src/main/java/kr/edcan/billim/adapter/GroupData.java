@@ -1,8 +1,6 @@
-package kr.edcan.billim;
+package kr.edcan.billim.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
 /**
  * Created by Junseok on 2015-04-16.

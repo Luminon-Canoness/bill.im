@@ -47,6 +47,8 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:layout_margin="16dp"
+                    fab:fab_labelsPosition="left"
+                    fab:fab_labelStyle="@style/menu_labels_style"
                     fab:fab_addButtonColorNormal="#6d4c41"
                     fab:fab_addButtonColorPressed="#8D6E63"
                     fab:fab_expandDirection="up">

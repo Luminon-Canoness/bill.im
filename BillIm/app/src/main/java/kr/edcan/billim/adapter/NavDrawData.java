@@ -1,11 +1,11 @@
-package kr.edcan.billim;
+package kr.edcan.billim.adapter;
 
 import android.content.Context;
 
 /**
  * Created by kotohana5706 on 15. 7. 13.
  */
-class NavDrawData {
+public class NavDrawData {
     private String List;
     private int icon;
 

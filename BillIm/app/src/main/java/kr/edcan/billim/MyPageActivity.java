@@ -1,20 +1,15 @@
 package kr.edcan.billim;
 
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,12 +21,11 @@ import android.widget.Toast;
 
 import com.rey.material.app.Dialog;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.edcan.billim.utils.BillimService;
+import kr.edcan.billim.utils.Group;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;

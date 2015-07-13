@@ -3,19 +3,14 @@ package kr.edcan.billim;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+
+import kr.edcan.billim.utils.CustomDialog;
 
 
 public class ViewActivity extends ActionBarActivity implements View.OnClickListener{
