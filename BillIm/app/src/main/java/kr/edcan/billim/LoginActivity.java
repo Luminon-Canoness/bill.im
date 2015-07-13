@@ -114,11 +114,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                         LoginActivity.this.user = user;
                         apikey = user.token;
                         String out = user.name;
-                        if (user.groups != null) {
-                            for (Group group : user.groups) {
-                                out += group.name;
-                            }
-                        }
                         Log.e("kr.kkiro.httptest", apikey);
                         editor.putString("Username", out);
                         editor.putString("apikey", apikey);
@@ -134,7 +129,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         accessToken = AccessToken.getCurrentAccessToken();
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
     }
-
 
     public void setDefault() {
         sharedPreferences = getSharedPreferences("Billim", 0);
