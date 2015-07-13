@@ -12,7 +12,7 @@
     <string name="title_activity_used_history">UsedHistoryActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_login">LoginActivity</string>
-
+    <string name="facebook_app_id">655708987896404</string>
     <string name="category">카테고리 선택</string>
     <string-array name="category_array">
         <item>전체 보기</item>
@@ -23,4 +23,5 @@
         <item>책 및 문서</item>
         <item>기타</item>
     </string-array>
+    <string name="title_activity_tutorial">TutorialActivity</string>
 </resources>

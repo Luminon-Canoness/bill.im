@@ -70,6 +70,7 @@
                         fab:fab_icon="@drawable/btn_trade_main"
                         fab:fab_size="mini" />
                 </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
             </RelativeLayout>
         </FrameLayout>
     </LinearLayout>

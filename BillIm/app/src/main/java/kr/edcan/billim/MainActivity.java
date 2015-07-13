@@ -3,16 +3,17 @@ package kr.edcan.billim;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
@@ -20,126 +21,75 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.rey.material.widget.SnackBar;
 import com.rey.material.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     DrawerLayout drawerLayout;
-    ListView list;
-    ListView navList;
-    ExpandableListView drawer_expand_listview;
+    ListView list, navList;
     ArrayList<NavDrawData> navigtionBar;
     ArrayList<CData> arrayList;
     ArrayList<String> groupList = null;
-    ArrayList<ArrayList<String>> childList = null;
-    ArrayList<String> childListContent = null;
 
-    Spinner group_selector;
+    int icon[];
+    TextView username, state;
+    Spinner group_selector, categorySelect;
     int type_icon, type, borrowType, count;
-    TextView no_billim;
     FloatingActionButton BillimButton, TradeButton;
-    ImageView drawermenu, categorymenu;
+    ImageView drawermenu;
+
+    BillimService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setDefault();
+        setCategorySelect();
+        setData();
         setNavigationBar();
         setArrayList();
-        setCategorySelect();
-        no_billim = (TextView) findViewById(R.id.no_billim);
-        sharedPreferences = getSharedPreferences("Billim", 0);
-        editor = sharedPreferences.edit();
-
-        BillimButton = (FloatingActionButton) findViewById(R.id.billim_post);
-        BillimButton.setOnClickListener(this);
-        TradeButton = (FloatingActionButton) findViewById(R.id.trade_post);
-        TradeButton.setOnClickListener(this);
-        Intent i = getIntent();
-        if (i.getIntExtra("State", 0) == 1) {
-            count = sharedPreferences.getInt("Count", 0);
-            editor.putString("name" + count, i.getStringExtra("Name"));
-            editor.putString("comment" + count, i.getStringExtra("Comment"));
-            editor.putInt("Count", count + 1);
-            editor.putInt("Type" + count, i.getIntExtra("Type", -1));
-            editor.putInt("BorrowType" + count, i.getIntExtra("BorrowType", -1));
-            editor.putInt("IDValue" + count, i.getIntExtra("IDValue", 100001));
-            editor.commit();
-            i.removeExtra("State");
-        }
-        int j;
-        for (j = 0; j < sharedPreferences.getInt("Count", 0); j++) {
-            if (type == -1 || borrowType == -1) {
-                Toast("어플리케이션 오류가 발생하였습니다", 0);
-                break;
-            }
-            switch (sharedPreferences.getInt("Type" + j, -1)) {
-                case 0: {
-                    type_icon = R.drawable.ic_pillgigu;
-                    break;
-                }
-                case 1: {
-                    type_icon = R.drawable.ic_machine;
-                    break;
-                }
-                case 2: {
-                    type_icon = R.drawable.ic_food;
-                    break;
-                }
-                case 3: {
-                    type_icon = R.drawable.ic_cloth;
-                    break;
-                }
-                case 4: {
-                    type_icon = R.drawable.ic_books;
-                    break;
-                }
-                case 5: {
-                    type_icon = R.drawable.ic_etc;
-                    break;
-                }
-            }
-            addDataToArrayList(type_icon, sharedPreferences.getString("name" + j, "" + 0), sharedPreferences.getString("comment" + j, "" + 0), (sharedPreferences.getInt("BorrowType" + j, -1) == 0) ? "빌림" : "교환", sharedPreferences.getInt("IDValue" + j, 1000001));
-        }
     }
 
     public void addDataToArrayList(int icon, String title, String description, String confirm, int value_id) {
         arrayList.add(new CData(getApplicationContext(), icon, title, description, confirm, value_id));
     }
 
+    public void ActivityResult() {
+
+    }
+
     public void setDefault() {
+        sharedPreferences = getSharedPreferences("Billim", 0);
+        editor = sharedPreferences.edit();
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawermenu = (ImageView) findViewById(R.id.drawer_menu);
+        username = (TextView) findViewById(R.id.profile_name);
+        username.setText(sharedPreferences.getString("Username", "Error"));
+        // icon settings
+        icon = new int[]{R.drawable.ic_pillgigu, R.drawable.ic_machine, R.drawable.ic_cloth, R.drawable.ic_books, R.drawable.ic_etc};
     }
 
     public void setArrayList() {
         group_selector = (Spinner) findViewById(R.id.groupSelector);
         groupList = new ArrayList<>();
-        String[] group = {"선린인터넷고등학교","EDCAN","1학년5반","ㅁㄴㅇㄹ"};
-        for(int i=0;i<group.length;i++){
+        String[] group = {"선린인터넷고등학교", "EDCAN", "1학년5반", "ㅁㄴㅇㄹ"};
+        for (int i = 0; i < group.length; i++) {
             groupList.add(group[i]);
         }
+        group_selector.setAdapter(new ArrayAdapter<String>(this, R.layout.select_dialog_item_material, groupList));
 
-        group_selector.setAdapter(new ArrayAdapter<String>(this, R.layout.select_dialog_item_material,groupList));
-        arrayList = new ArrayList<>();
-        list = (ListView) findViewById(R.id.ListView);
-        View header = getLayoutInflater().inflate(R.layout.listview_main_header, null, false);
-        list.addHeaderView(header);
-        list.setAdapter(new DataAdapter(this, arrayList));
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    Intent viewIntent = new Intent(getApplicationContext(), ViewActivity.class);
-                    viewIntent.putExtra("position", position);
-                    startActivity(viewIntent);
-                };
-            }
-        });
+
     }
 
     public void Toast(String s, int length) {
@@ -181,8 +131,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         });
     }
 
-    public void setCategorySelect(){
-        final Spinner categorySelect = (Spinner)findViewById(R.id.main_spinner);
+    public void setCategorySelect() {
+        list = (ListView) findViewById(R.id.ListView);
+        View header = getLayoutInflater().inflate(R.layout.listview_main_header, null, false);
+        list.addHeaderView(header);
+        categorySelect = (Spinner) findViewById(R.id.main_spinner);
         SpinnerAdapter spinnerAdapter = ArrayAdapter.createFromResource(MainActivity.this, R.array.category_array, R.layout.spinner_textstyle);
         categorySelect.setAdapter(spinnerAdapter);
         categorySelect.setOnItemClickListener(new Spinner.OnItemClickListener() {
@@ -193,6 +146,49 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         });
     }
+
+    public void setData() {
+        arrayList = new ArrayList<>();
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint("http://billim.kkiro.kr")
+                .build();
+        service = restAdapter.create(BillimService.class);
+        BillimButton = (FloatingActionButton) findViewById(R.id.billim_post);
+        BillimButton.setOnClickListener(this);
+        TradeButton = (FloatingActionButton) findViewById(R.id.trade_post);
+        TradeButton.setOnClickListener(this);
+        // API fetch
+        // 1은 현재 그룹 번호로 바꿔줘야됨 수고
+        service.articleList(1, 65536, new Callback<List<Article>>() {
+            @Override
+            public void success(List<Article> articles, Response response) {
+                for (Article article : articles) {
+                    Log.e("name", article.name);
+                    addDataToArrayList((icon.length > article.category) ? icon[article.category] : icon[0], article.name, article.description, (article.type == 0) ? "빌림" : "교환", article.id);
+                }
+                list.setAdapter(new DataAdapter(MainActivity.this, arrayList));
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        if (position != 0) {
+                            Intent viewIntent = new Intent(getApplicationContext(), ViewActivity.class);
+                            viewIntent.putExtra("position", position);
+                            startActivity(viewIntent);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast("어플리케이션 오류(" + error.getResponse().getStatus() + ")가 발생하였습니다", 0);
+
+            }
+        });
+
+
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -205,18 +201,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.trade_post: {
                 Intent post = new Intent(getApplicationContext(), SelectActivity.class);
                 post.putExtra("ShareType", 1);
-                startActivityForResult(post,1000);
+                startActivityForResult(post, 1000);
                 break;
             }
         }
     }
+
     class CData {
         private int icon, value_id;
         private String confirm;
         private String content_label;
         private String description;
 
-        public CData(Context context, int icon_,  String content_label_, String description_, String confirm_, int value_id_) {
+        public CData(Context context, int icon_, String content_label_, String description_, String confirm_, int value_id_) {
             icon = icon_;
             confirm = confirm_;
             content_label = content_label_;
@@ -224,20 +221,27 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             value_id = value_id_;
         }
 
-        public int getValue_id() {return value_id;}
+        public int getValue_id() {
+            return value_id;
+        }
+
         public int getIcon() {
             return icon;
         }
+
         public String getConfirm() {
             return confirm;
         }
+
         public String getContent_label() {
             return content_label;
         }
+
         public String getDescription() {
             return description;
         }
     }
+
     class NavDrawerAdapter extends ArrayAdapter<NavDrawData> {
         // 레이아웃 XML을 읽어들이기 위한 객체
         private LayoutInflater mInflater;
@@ -274,6 +278,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             return view;
         }
     }
+
     class DataAdapter extends ArrayAdapter<CData> {
         // 레이아웃 XML을 읽어들이기 위한 객체
         private LayoutInflater mInflater;
@@ -315,6 +320,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             return view;
         }
     }
+
     class NavDrawData {
         private String List;
         private int icon;
@@ -323,11 +329,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             List = List_;
             icon = icon_;
         }
+
         public String getList() {
             return List;
         }
 
-        public int getIcon(){
+        public int getIcon() {
             return icon;
         }
     }
