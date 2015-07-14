@@ -64,7 +64,7 @@
                         android:layout_height="wrap_content"
                         fab:fab_colorNormal="#6d4c41"
                         fab:fab_colorPressed="#8D6E63"
-                        fab:fab_icon="@drawable/btn_billim_main"
+                        fab:fab_icon="@drawable/btn_yukbillim_mini"
                         fab:fab_size="mini"
                         fab:fab_title="빌려드려요" />
 
@@ -74,7 +74,7 @@
                         android:layout_height="wrap_content"
                         fab:fab_colorNormal="#6d4c41"
                         fab:fab_colorPressed="#8D6E63"
-                        fab:fab_icon="@drawable/btn_billim_main"
+                        fab:fab_icon="@drawable/btn_billim_mini"
                         fab:fab_size="mini"
                         fab:fab_title="빌려주세요" />
 
@@ -84,7 +84,7 @@
                         android:layout_height="wrap_content"
                         fab:fab_colorNormal="#6d4c41"
                         fab:fab_colorPressed="#8D6E63"
-                        fab:fab_icon="@drawable/btn_billim_main"
+                        fab:fab_icon="@drawable/btn_give_mini"
                         fab:fab_size="mini"
                         fab:fab_title="드립니다" />
 
@@ -95,7 +95,7 @@
                         android:padding="10dp"
                         fab:fab_colorNormal="#6d4c41"
                         fab:fab_colorPressed="#8D6E63"
-                        fab:fab_icon="@drawable/btn_trade_main"
+                        fab:fab_icon="@drawable/btn_trade_mini"
                         fab:fab_size="mini"
                         fab:fab_title="교환해요" />
                 </com.getbase.floatingactionbutton.FloatingActionsMenu>

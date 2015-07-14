@@ -35,7 +35,11 @@ public interface BillimService {
     public void groupSelfList(@Field("apikey") String apikey, Callback<List<Group>> callback);
 
     @Multipart
-    @POST("/api/group/self/list")
-    public void groupSelfList2(@Part("apikey")TypedFile file, Callback<List<Group>> callback);
-
+    @POST("/api/article/self/create")
+    public void postArticle(@Part("apikey") String apikey, @Part("group") int group, @Part("type") int type, @Part("category") int category,
+                            @Part("name") String name, @Part("description") String description, @Part("reward") String reward,
+                            @Part("location") String location, @Part("photo") TypedFile photo, Callback<Article> callback);
+    @FormUrlEncoded
+    @POST("/api/article/self/info")
+    public void getArticle(@Field("apikey") String apikey, int id, Callback<Article> callback);
 }

@@ -3,6 +3,7 @@ package kr.edcan.billim;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,17 +22,32 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
+import java.util.List;
+
+import kr.edcan.billim.utils.Article;
+import kr.edcan.billim.utils.BillimService;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedFile;
+
 
 public class PostActivity extends ActionBarActivity {
 
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     FloatingActionButton postbutton;
     EditText name, comment, place, reward;
     ImageView post_type_image;
     TextView post_type_text;
     Intent intent;
-    String shareType;
+    String shareType, picturePath, apikey, item_name, item_comment, item_place, item_reward;
     ImageView toGallery;//이미지뷰 선언
     private static int RESULT_LOAD_IMAGE = 1;
+    BillimService service;
+    int shareType_int, category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +66,18 @@ public class PostActivity extends ActionBarActivity {
         });
         post_type_image = (ImageView) findViewById(R.id.post_type_image);
         post_type_text = (TextView) findViewById(R.id.post_type_text);
+        sharedPreferences = getSharedPreferences("Billim", 0);
+        apikey = sharedPreferences.getString("apikey", "");
         setDefault();
-        setUpload();
+        setImage();
     }
 
     public void setDefault() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         intent = getIntent();
-        switch (intent.getIntExtra("ShareType", -1)) {
+        shareType_int = intent.getIntExtra("ShareType", -1);
+        category = intent.getIntExtra("Type", -1);
+        switch (shareType_int) {
             case 0: {
                 shareType = "빌림 - 요청";
                 actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>빌려주세요!</b> </font>"));
@@ -87,7 +108,7 @@ public class PostActivity extends ActionBarActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
         actionBar.setElevation(0);
 
-        switch (intent.getIntExtra("Type", -1)) {
+        switch (category) {
             case -1: {
                 ShortToast("어플리케이션 오류가 발생하였습니다.");
                 finish();
@@ -124,10 +145,14 @@ public class PostActivity extends ActionBarActivity {
                 break;
             }
         }
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint("http://billim.kkiro.kr")
+                .build();
+        service = restAdapter.create(BillimService.class);
 
     }
 
-    public void setUpload() {
+    public void setImage() {
         toGallery = (ImageView) findViewById(R.id.post_image); //이미지뷰 초기화
         toGallery.setOnClickListener(new View.OnClickListener() {  //이미지뷰가 클릭되었을 때의 리스너
             @Override
@@ -135,17 +160,17 @@ public class PostActivity extends ActionBarActivity {
                 Intent i = new Intent(
                         Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//안드로이드 시스템에 있는 이미지들에서 선택(PICK)을 위한 인텐트 생성
+                //안드로이드 시스템에 있는 이미지들에서 선택(PICK)을 위한 인텐트 생성
                 startActivityForResult(i, RESULT_LOAD_IMAGE);//위에서 선언한 1이라는 결과 코드로 액티비티를 선언
             }
         });
     }
 
     public void checkDialog() {
-        final String item_name = name.getText().toString();
-        final String item_comment = comment.getText().toString();
-        final String item_place = place.getText().toString();
-        final String item_reward = reward.getText().toString();
+        item_name = name.getText().toString();
+        item_comment = comment.getText().toString();
+        item_place = place.getText().toString();
+        item_reward = reward.getText().toString();
         if (!item_name.trim().equals("") && !item_comment.trim().equals("") && !item_place.trim().equals("") && !item_reward.trim().equals("")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("다시 한번 확인해주세요!");
@@ -162,19 +187,7 @@ public class PostActivity extends ActionBarActivity {
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                                    i.putExtra("Name", item_name);
-                                    i.putExtra("Comment", item_comment);
-                                    i.putExtra("Place", item_place);
-                                    i.putExtra("Reward", item_reward);
-                                    i.putExtra("BorrowType", intent.getIntExtra("ShareType", -1));
-                                    i.putExtra("State", 1);
-                                    i.putExtra("Type", intent.getIntExtra("Type", -1));
-                                    String s = ((int) (Math.random() * 100000) + 1) + "";
-                                    ShortToast(s);
-                                    i.putExtra("IDValue", Integer.parseInt(s));
-                                    startActivity(i);
-                                    finish();
+                                    setUpload();
                                 }
                             })
                     .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -205,10 +218,30 @@ public class PostActivity extends ActionBarActivity {
                     filePathColumn, null, null, null);
             cursor.moveToFirst();
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
+            picturePath = cursor.getString(columnIndex);
+            Log.e("파일 경로", picturePath);
 //Uri에서 이미지의 외장 메모리상의 주소를 받아온 뒤
             cursor.close();
             toGallery.setImageBitmap(BitmapFactory.decodeFile(picturePath));//이미지뷰에 뿌려줍니다.
         }
+    }
+
+    public void setUpload() {
+        service.postArticle(apikey, 1, shareType_int, category, item_name, item_comment, item_reward, item_place,
+                new TypedFile("image/jpeg", new File(picturePath)), new Callback<Article>() {
+            @Override
+            public void success(Article article, Response response) {
+                ShortToast("성공 " + response);
+                finish();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int errorcode = error.getResponse().getStatus();
+                ShortToast("에러 " + errorcode);
+                Log.e("error", error.getCause().toString());
+                if(errorcode == 200) finish();
+            }
+        });
     }
 }

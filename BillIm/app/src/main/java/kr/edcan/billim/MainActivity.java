@@ -165,14 +165,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void success(List<Article> articles, Response response) {
                 for (Article article : articles) {
-                    addDataToArrayList((icon.length > article.category) ? icon[article.category] : icon[0], article.name, article.description, (article.type == 0) ? "빌림" : "교환", article.id);
+                    addDataToArrayList(article.id, (icon.length > article.category) ? icon[article.category] : icon[0], article.name, article.description, (article.type == 0) ? "빌림" : "교환");
                 }
                 list.setAdapter(new DataAdapter(MainActivity.this, arrayList));
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         if (position != 0) {
+                            TextView textView = (TextView)findViewById(R.id.id_value);
                             Intent viewIntent = new Intent(getApplicationContext(), ViewActivity.class);
+                            viewIntent.putExtra("ID", Integer.parseInt(textView.getText().toString()));
                             startActivity(viewIntent);
                         }
                     }
@@ -308,8 +310,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return targetBitmap;
     }
 
-    public void addDataToArrayList(int icon, String title, String description, String confirm, int value_id) {
-        arrayList.add(new CData(getApplicationContext(), icon, title, description, confirm, value_id));
+    public void addDataToArrayList(int id, int icon, String title, String description, String confirm) {
+        arrayList.add(new CData(getApplicationContext(), id, icon, title, description, confirm));
     }
 
     @Override
@@ -373,9 +375,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return true;
     }
 
+    public void onPause(){
+        super.onPause();
+        BillimMenu.collapse();
+        floatMenuBackground.setVisibility(View.GONE);
+
+    }
     public void onResume() {
         super.onResume();
         setData();
         setArrayList();
-    }
+        }
 }

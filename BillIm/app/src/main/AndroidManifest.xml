@@ -41,6 +41,7 @@
         <activity
             android:name=".ViewActivity"
             android:label="@string/title_activity_view"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MyPageActivity"

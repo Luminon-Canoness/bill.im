@@ -51,7 +51,7 @@ public class DataAdapter extends ArrayAdapter<CData> {
             description.setText(data.getDescription());
             logo.setImageResource(data.getIcon());
             confirm.setText(data.getConfirm());
-            value_id.setText(data.getValue_id() + "");
+            value_id.setText(data.getId() + "");
         }
         return view;
     }
