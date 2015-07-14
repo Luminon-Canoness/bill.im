@@ -2,13 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <ImageView
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/profile_non_myp"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+    <kr.edcan.billim.utils.RoundImageView
+        android:layout_centerHorizontal="true"
+        android:id="@+id/mypage_profile_photo"
+        android:src="@drawable/profile_non_myp"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:border_width="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="30dp"
+        app:border_color="#6d4c41"/>
+    </RelativeLayout>
     <TextView
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"

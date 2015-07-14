@@ -172,7 +172,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         if (position != 0) {
-                            TextView textView = (TextView)findViewById(R.id.id_value);
+                            TextView textView = (TextView)view.findViewById(R.id.id_value);
                             Intent viewIntent = new Intent(getApplicationContext(), ViewActivity.class);
                             viewIntent.putExtra("ID", Integer.parseInt(textView.getText().toString()));
                             startActivity(viewIntent);

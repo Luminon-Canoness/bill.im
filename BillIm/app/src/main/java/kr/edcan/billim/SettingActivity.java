@@ -7,9 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
-import android.view.DragEvent;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
@@ -40,5 +39,15 @@ public class SettingActivity extends ActionBarActivity implements View.OnClickLi
     public void onClick(View v) {
         Intent developerInfo = new Intent(getApplicationContext(), DeveloperInfo.class);
         startActivity(developerInfo);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

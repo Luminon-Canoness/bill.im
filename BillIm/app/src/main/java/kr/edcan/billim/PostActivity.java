@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,7 +24,6 @@ import android.widget.Toast;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
-import java.util.List;
 
 import kr.edcan.billim.utils.Article;
 import kr.edcan.billim.utils.BillimService;
@@ -75,6 +75,7 @@ public class PostActivity extends ActionBarActivity {
     public void setDefault() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         intent = getIntent();
+        picturePath="";
         shareType_int = intent.getIntExtra("ShareType", -1);
         category = intent.getIntExtra("Type", -1);
         switch (shareType_int) {
@@ -228,20 +229,30 @@ public class PostActivity extends ActionBarActivity {
 
     public void setUpload() {
         service.postArticle(apikey, 1, shareType_int, category, item_name, item_comment, item_reward, item_place,
-                new TypedFile("image/jpeg", new File(picturePath)), new Callback<Article>() {
-            @Override
-            public void success(Article article, Response response) {
-                ShortToast("성공 " + response);
-                finish();
-            }
+                (!picturePath.equals("")) ? new TypedFile("image/jpeg", new File(picturePath)) : null, new Callback<Article>() {
+                    @Override
+                    public void success(Article article, Response response) {
+                        ShortToast("성공 " + response);
+                        finish();
+                    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                int errorcode = error.getResponse().getStatus();
-                ShortToast("에러 " + errorcode);
-                Log.e("error", error.getCause().toString());
-                if(errorcode == 200) finish();
-            }
-        });
+                    @Override
+                    public void failure(RetrofitError error) {
+                        int errorcode = error.getResponse().getStatus();
+                        ShortToast("에러 " + errorcode);
+                        Log.e("error", error.getCause().toString());
+                        if (errorcode == 200) finish();
+                    }
+                });
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

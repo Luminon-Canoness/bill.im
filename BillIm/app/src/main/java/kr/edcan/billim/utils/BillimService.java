@@ -41,5 +41,5 @@ public interface BillimService {
                             @Part("location") String location, @Part("photo") TypedFile photo, Callback<Article> callback);
     @FormUrlEncoded
     @POST("/api/article/self/info")
-    public void getArticle(@Field("apikey") String apikey, int id, Callback<Article> callback);
+    public void getArticle(@Field("apikey") String apikey, @Field("id") int id, Callback<Article> callback);
 }

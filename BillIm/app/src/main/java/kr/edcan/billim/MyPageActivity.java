@@ -4,11 +4,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.edcan.billim.utils.BillimService;
+import kr.edcan.billim.utils.DownloadImageTask;
 import kr.edcan.billim.utils.Group;
+import kr.edcan.billim.utils.RoundImageView;
+import kr.edcan.billim.utils.User;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -39,9 +48,10 @@ public class MyPageActivity extends ActionBarActivity {
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    String apikey, group, name;
+    String apikey, group, name, photo;
     BillimService service;
     ArrayList<MyPageData> arrayList;
+    RoundImageView profilePhoto;
     ProgressDialog progressDialog;
 
     @Override
@@ -137,6 +147,24 @@ public class MyPageActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), "SHIT", Toast.LENGTH_SHORT).show();
             }
         });
+        service.userSelfInfo(apikey, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                photo = user.photo;
+                profilePhoto = (RoundImageView)findViewById(R.id.mypage_profile_photo);
+                if (photo != null) {
+                    new DownloadImageTask(profilePhoto).execute(photo);
+                    Bitmap bitmap = ((BitmapDrawable) profilePhoto.getDrawable()).getBitmap();
+                    profilePhoto.setImageBitmap(getRoundedShape(bitmap));
+                } else Log.e("에러", "Error loading profile picture");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast("세션이 만료됨, 다시 로그인하세요", 0);
+                Log.e("에러코드", "" + error.getResponse().getStatus());
+            }
+        });
     }
 
 
@@ -176,6 +204,32 @@ public class MyPageActivity extends ActionBarActivity {
         }
     }
 
+    public void Toast(String s, int length) {
+        Toast.makeText(getApplicationContext(), s, (length == 0) ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG).show();
+    }
+
+    public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
+        int targetWidth = 50;
+        int targetHeight = 50;
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
+                targetHeight, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(targetBitmap);
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2,
+                ((float) targetHeight - 1) / 2,
+                (Math.min(((float) targetWidth),
+                        ((float) targetHeight)) / 2),
+                Path.Direction.CCW);
+
+        canvas.clipPath(path);
+        Bitmap sourceBitmap = scaleBitmapImage;
+        canvas.drawBitmap(sourceBitmap,
+                new Rect(0, 0, sourceBitmap.getWidth(),
+                        sourceBitmap.getHeight()),
+                new Rect(0, 0, targetWidth, targetHeight), null);
+        return targetBitmap;
+    }
     class MyPageData {
         private int icon;
         private String text;
