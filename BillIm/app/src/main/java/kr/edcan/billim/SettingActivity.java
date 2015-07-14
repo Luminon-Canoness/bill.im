@@ -7,7 +7,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.view.DragEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
@@ -30,7 +32,7 @@ public class SettingActivity extends ActionBarActivity implements View.OnClickLi
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
             actionBar.setElevation(0);
         }
-        develInfo = (RelativeLayout)findViewById(R.id.developer_info);
+        develInfo = (RelativeLayout) findViewById(R.id.developer_info);
         develInfo.setOnClickListener(this);
     }
 

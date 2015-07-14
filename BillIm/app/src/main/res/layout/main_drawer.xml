@@ -24,11 +24,15 @@
                 android:layout_centerVertical="true"
                 android:orientation="vertical">
 
-                <ImageView
+                <kr.edcan.billim.utils.RoundImageView
                     android:id="@+id/profile_photo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/profile_actionbar" />
+                    android:src="@drawable/profile_actionbar"
+                    android:layout_width="48dp"
+                    android:layout_centerInParent="true"
+                    android:layout_height="48dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    app:border_width="1.5dp"
+                    app:border_color="#3c3c3c"/>
 
                 <TextView
                     android:id="@+id/profile_name"

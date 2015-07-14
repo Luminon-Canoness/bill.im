@@ -52,19 +52,32 @@ public class PostActivity extends ActionBarActivity {
         setDefault();
         setUpload();
     }
+
     public void setDefault() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         intent = getIntent();
         switch (intent.getIntExtra("ShareType", -1)) {
             case 0: {
-                shareType = "빌리기";
+                shareType = "빌림 - 요청";
                 actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>빌려주세요!</b> </font>"));
                 name.setHint("빌릴 물건의 이름 입력");
                 break;
             }
-            case 1 : {
-                shareType = "교환하기";
-                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>교환해요!</b> </font>"));
+            case 1: {
+                shareType = "빌림 - 빌려줌";
+                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>빌려드려요!</b> </font>"));
+                name.setHint("빌려줄 물건의 이름 입력");
+                break;
+            }
+            case 2: {
+                shareType = "양도";
+                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>드려요!</b> </font>"));
+                name.setHint("양도할 물건의 이름 입력");
+                break;
+            }
+            case 3: {
+                shareType = "교환";
+                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>드려요!</b> </font>"));
                 name.setHint("교환할 물건의 이름 입력");
                 break;
             }
@@ -113,7 +126,8 @@ public class PostActivity extends ActionBarActivity {
         }
 
     }
-    public void setUpload(){
+
+    public void setUpload() {
         toGallery = (ImageView) findViewById(R.id.post_image); //이미지뷰 초기화
         toGallery.setOnClickListener(new View.OnClickListener() {  //이미지뷰가 클릭되었을 때의 리스너
             @Override
@@ -138,7 +152,7 @@ public class PostActivity extends ActionBarActivity {
             builder.setMessage(
                     "이름 : " + item_name + "\n" +
                             "형식 : " + shareType + "\n" +
-                             post_type_text.getText().toString() + "\n" +
+                            post_type_text.getText().toString() + "\n" +
                             "설명 : " + item_comment + "\n" +
                             "만날 장소 : " + item_place + "\n" +
                             "보상 : " + item_reward + "\n\n" +
@@ -156,9 +170,9 @@ public class PostActivity extends ActionBarActivity {
                                     i.putExtra("BorrowType", intent.getIntExtra("ShareType", -1));
                                     i.putExtra("State", 1);
                                     i.putExtra("Type", intent.getIntExtra("Type", -1));
-                                    String s = ((int)(Math.random() *100000)+1) + "";
+                                    String s = ((int) (Math.random() * 100000) + 1) + "";
                                     ShortToast(s);
-                                    i.putExtra("IDValue",Integer.parseInt(s));
+                                    i.putExtra("IDValue", Integer.parseInt(s));
                                     startActivity(i);
                                     finish();
                                 }
@@ -173,9 +187,11 @@ public class PostActivity extends ActionBarActivity {
             alert.show();
         } else Toast.makeText(getApplicationContext(), "공백 없이 입력해주세요!", Toast.LENGTH_SHORT).show();
     }
+
     public void ShortToast(String s) {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //startActivityForResult 에서 결과가 나왔을때 작동하는 메서드 입니다

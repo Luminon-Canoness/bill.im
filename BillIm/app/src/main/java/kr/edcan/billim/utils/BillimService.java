@@ -5,7 +5,10 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by kotohana5706 on 15. 7. 12.
@@ -30,5 +33,9 @@ public interface BillimService {
     @FormUrlEncoded
     @POST("/api/group/self/list")
     public void groupSelfList(@Field("apikey") String apikey, Callback<List<Group>> callback);
+
+    @Multipart
+    @POST("/api/group/self/list")
+    public void groupSelfList2(@Part("apikey")TypedFile file, Callback<List<Group>> callback);
 
 }

@@ -36,6 +36,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     protected AccessToken accessToken;
     protected String apikey,out;
     protected boolean enabled;
+    protected boolean signingIn = false;
     protected User user;
     protected BillimService service;
     SharedPreferences sharedPreferences;
@@ -51,12 +52,20 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         if(!apikey.equals("")) {
             service.userSelfInfo(apikey, new Callback<User>() {
                 @Override
-                public void success(User user, Response response) {
+                public void success(final User user, Response response) {
                     new Handler().postDelayed(new Runnable() {// 1 초 후에 실행
                         @Override
                         public void run() {
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
+                            if (user.groups.size()==0){
+                                Intent tutorial = new Intent(getApplicationContext(), TutorialActivity.class);
+                                startActivity(tutorial);
+                                finish();
+                                //TODO 계정 정보 없을 시 튜토리얼
+                            }else {
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
                     }, 500);
                 }
@@ -74,6 +83,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     }
 
     public void SignIn() {
+        if(signingIn) return;
+        signingIn = true;
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -104,11 +115,13 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     @Override
                     public void failure(RetrofitError error) {
                         Log.e("kr.kkiro.httptest", error.getMessage());
-                        Toast("로그인에 실패하였습니다",0);
+                        Toast("로그인에 실패하였습니다", 0);
+                        signingIn = false;
                     }
 
                     @Override
                     public void success(User user, Response response) {
+                        signingIn = true;
                         Log.i("kr.kkiro.httptest", "Code" + response.getStatus());
                         LoginActivity.this.user = user;
                         if (user.enabled == false) {
@@ -119,9 +132,16 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                             editor.putString("Username", out);
                             editor.putString("apikey", apikey);
                             editor.commit();
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                            if (user.groups == null || user.groups.size()==0) {
+                                Intent tutorial = new Intent(getApplicationContext(), TutorialActivity.class);
+                                startActivity(tutorial);
+                                finish();
+                                //TODO 계정 정보 없을 시 튜토리얼
+                            }else {
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
                     }
                 });
