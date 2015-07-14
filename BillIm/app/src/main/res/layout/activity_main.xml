@@ -26,19 +26,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"></include>
 
-                <ListView
-                    android:id="@+id/ListView"
+                <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+                    android:id="@+id/swipe_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></ListView>
+                    android:layout_height="match_parent">
+
+                    <ListView
+                        android:id="@+id/ListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"></ListView>
+                </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
-                android:orientation="vertical"
                 android:id="@+id/float_menu_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#AAA8A8A8" />
+                android:background="#AAA8A8A8"
+                android:orientation="vertical"
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

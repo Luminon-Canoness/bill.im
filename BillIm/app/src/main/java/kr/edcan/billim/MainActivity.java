@@ -26,6 +26,8 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.rey.material.widget.Spinner;
 
 import java.util.ArrayList;
@@ -67,6 +69,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     BillimService service;
     String apikey;
     public static Activity activity;
+    SwipyRefreshLayout swipyRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         BillimTrade = (FloatingActionButton) findViewById(R.id.billim_trade_post);
         BillimFree = (FloatingActionButton) findViewById(R.id.billim_free_post);
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+        swipyRefreshLayout = (SwipyRefreshLayout)findViewById(R.id.swipe_layout);
         floatMenuBackground = (LinearLayout) findViewById(R.id.float_menu_background);
         linearLayout.setOnClickListener(this);
         BillimGive.setOnClickListener(this);
@@ -117,6 +121,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public void onMenuCollapsed() {
                 floatMenuBackground.setVisibility(View.GONE);
                 floatMenuBackground.setEnabled(false);
+            }
+        });
+        swipyRefreshLayout.setDirection(SwipyRefreshLayoutDirection.BOTH);
+        swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh(SwipyRefreshLayoutDirection swipyRefreshLayoutDirection) {
+                switch (swipyRefreshLayoutDirection){
+                    case TOP:
+                        setData();
+                        break;
+                    case BOTTOM:
+
+                        break;
+                }
             }
         });
         apikey = sharedPreferences.getString("apikey", "");
