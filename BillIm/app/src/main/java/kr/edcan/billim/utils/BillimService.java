@@ -42,4 +42,34 @@ public interface BillimService {
     @FormUrlEncoded
     @POST("/api/article/self/info")
     public void getArticle(@Field("apikey") String apikey, @Field("id") int id, Callback<Article> callback);
+
+    @FormUrlEncoded
+    @POST("/api/group/self/part")
+    public void leaveGroup(@Field("apikey") String apikey, @Field("id") int id, Callback<Article> callback);
+
+    @FormUrlEncoded
+    @POST("/api/group/search")
+    public void searchGroup(@Field("name") String name, Callback<List<Group>> callback);
+
+    @FormUrlEncoded
+    @POST("/api/group/self/join")
+    public void joinGroup(@Field("apikey") String apikey, @Field("id") int id, Callback<GroupResponse> callback);
+
+    @FormUrlEncoded
+    @POST("/api/group/self/create")
+    public void createGroup(@Field("apikey") String apikey, @Field("name") String name, Callback<GroupResponse> callback);
+
+    @FormUrlEncoded
+    @POST("/api/user/self/delete")
+    public void deleteAccount(@Field("apikey") String apikey, Callback callback);
+
+    @FormUrlEncoded
+    @POST("/api/article/self/list")
+    public void articleSelfList(@Field("apikey") String apikey, @Field("group") int id, Callback<List<Article>> callback);
+
+    @FormUrlEncoded
+    @POST("/api/article/self/confirm")
+    public void changePostState(@Field("apikey") String apikey, @Field("id") int id, Callback<List<Article>> callback);
+
+
 }

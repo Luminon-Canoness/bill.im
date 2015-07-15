@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="#BDA7A1"
+    android:weightSum="10"
+    android:layout_height="match_parent">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="1dp" android:layout_weight="3"/>
+    <TextView
+        android:textSize="35dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="내 단체 찾기"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Space
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+    <ImageView
+        android:id="@+id/touch"
+        android:src="@drawable/btn_welcome_groups"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Space
+        android:layout_weight="1"
+        android:layout_height="1dp"
+        android:layout_width="match_parent"/>
+    <TextView
+        android:textColor="#FFF"
+        android:textSize="14dp"
+        android:gravity="center"
+        android:text="이제 위의 버튼을 눌러 내 단체를 찾아봅시다.\n단체가 존재하지 않는다면 단체를 생성도 가능합니다."
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="3"/>
+</LinearLayout>

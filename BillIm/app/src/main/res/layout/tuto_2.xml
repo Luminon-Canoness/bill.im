@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="#BDA7A1"
+    android:weightSum="10"
+    android:layout_height="match_parent">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="1dp" android:layout_weight="3"/>
+    <TextView
+        android:textSize="35dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="같은 단체에서\n빌리고 교환하기."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Space
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+    <ImageView
+        android:src="@drawable/ic_welcome_biltre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Space
+        android:layout_weight="1"
+        android:layout_height="1dp"
+        android:layout_width="match_parent"/>
+    <TextView
+        android:textColor="#FFF"
+        android:textSize="14dp"
+        android:gravity="center"
+        android:text="사소한거 하나라도 필요한데, \n나와 주위의 사람들은 가지고 있지 않습니다.\nBill.IM은 빌리는 범위를 같은 단위까지 늘려서\n좀더 효율적으로 물건을 빌릴 수 있습니다.\n빌리는 것 외에도 물건을 교환, 기부가 가능합니다"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="3"/>
+</LinearLayout>

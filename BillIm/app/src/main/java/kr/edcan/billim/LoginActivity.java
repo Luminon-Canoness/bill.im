@@ -57,7 +57,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                         @Override
                         public void run() {
                             if (user.groups.size()==0){
-                                Intent tutorial = new Intent(getApplicationContext(), TutorialActivity.class);
+                                Intent tutorial = new Intent(getApplicationContext(), Tutorial.class);
                                 startActivity(tutorial);
                                 finish();
                                 //TODO 계정 정보 없을 시 튜토리얼
@@ -129,11 +129,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                         } else {
                             apikey = user.token;
                             out = user.name;
+                            editor.putInt("userid", user.id);
                             editor.putString("Username", out);
                             editor.putString("apikey", apikey);
                             editor.commit();
                             if (user.groups == null || user.groups.size()==0) {
-                                Intent tutorial = new Intent(getApplicationContext(), TutorialActivity.class);
+                                Intent tutorial = new Intent(getApplicationContext(), Tutorial.class);
                                 startActivity(tutorial);
                                 finish();
                                 //TODO 계정 정보 없을 시 튜토리얼

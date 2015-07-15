@@ -12,25 +12,54 @@
         android:layout_weight="10"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:padding="10dp"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:weightSum="5"
-            android:orientation="horizontal"
             android:layout_weight="3">
-            <Space
-                android:layout_weight="1"
-                android:layout_width="1dp"
-                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
                 <ImageView
-                android:id="@+id/post_image"
-                android:background="#3c3c3c"
-                android:layout_weight="3"
-                android:layout_width="1dp"
-                android:scaleType="centerCrop"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+                    android:id="@+id/post_image"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:scaleType="centerCrop" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#AA3c3c3c"></LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/click"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/image_asdf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/ic_picture_white" />
+                <TextView
+                    android:textSize="15dp"
+                    android:textColor="#FFF"
+                    android:layout_marginBottom="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@+id/image_asdf"
+                    android:layout_width="wrap_content"
+                    android:text="사진 변경"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+        </FrameLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -38,11 +67,11 @@
 
             <LinearLayout
                 android:id="@+id/select_to_Category"
-                android:padding="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <ImageView
                     android:id="@+id/post_type_image"
@@ -51,24 +80,20 @@
                     android:src="@drawable/ic_books" />
 
                 <LinearLayout
-                    android:layout_marginLeft="10dp"
-                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
                     android:orientation="vertical">
+
                     <TextView
-                        android:textStyle="bold"
                         android:id="@+id/post_type_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="필기구"
                         android:textColor="#916C63"
-                        android:textSize="20dp" />
-                    <TextView
-                        android:text="카테고리를 변경하려면 선택하세요"
-                        android:textSize="15dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -231,6 +256,7 @@
 
         </LinearLayout>
     </LinearLayout>
+
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/postbutton"
         android:layout_width="wrap_content"

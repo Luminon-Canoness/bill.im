@@ -56,10 +56,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     ListView list, navList;
     ArrayList<NavDrawData> navigtionBar;
     ArrayList<CData> arrayList;
+    DataAdapter listAdapter;
     ArrayList<String> groupList = null;
+    ArrayList<Group> groupList2 = null;
     String photo, phone, description;
     long mBackPressed;
-    int icon[], give, take, exchange, isPopup = 0;
+    int icon[], give, take, exchange, isPopup = 0, currentMax = 1000000, scrollstate, savedPosition, savedListTop;
     TextView username, state;
     Spinner group_selector, categorySelect;
     FloatingActionButton BillimGive, BillimTake, BillimFree, BillimTrade;
@@ -68,6 +70,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     RoundImageView profilePhoto;
     BillimService service;
     String apikey;
+    String[] postType, state_;
     public static Activity activity;
     SwipyRefreshLayout swipyRefreshLayout;
 
@@ -77,9 +80,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         activity = this;
         setDefault();
-        setProfilePhoto();
+        setProfile();
         setCategorySelect();
         setNavigationBar();
+        currentMax = 1000000;
+        setData();
+        setUserPhoto();
     }
 
     public void setDefault() {
@@ -97,7 +103,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         BillimTrade = (FloatingActionButton) findViewById(R.id.billim_trade_post);
         BillimFree = (FloatingActionButton) findViewById(R.id.billim_free_post);
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
-        swipyRefreshLayout = (SwipyRefreshLayout)findViewById(R.id.swipe_layout);
+        swipyRefreshLayout = (SwipyRefreshLayout) findViewById(R.id.swipe_layout);
         floatMenuBackground = (LinearLayout) findViewById(R.id.float_menu_background);
         linearLayout.setOnClickListener(this);
         BillimGive.setOnClickListener(this);
@@ -127,12 +133,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh(SwipyRefreshLayoutDirection swipyRefreshLayoutDirection) {
-                switch (swipyRefreshLayoutDirection){
+                switch (swipyRefreshLayoutDirection) {
                     case TOP:
+                        currentMax = 1000000;
                         setData();
                         break;
                     case BOTTOM:
-
+                        setData(true);
                         break;
                 }
             }
@@ -140,6 +147,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         apikey = sharedPreferences.getString("apikey", "");
         // icon settings
         icon = new int[]{R.drawable.ic_pillgigu, R.drawable.ic_machine, R.drawable.ic_cloth, R.drawable.ic_books, R.drawable.ic_etc};
+        postType = new String[]{"빌려드림","빌림","드림","교환"};
+        state_= new String[]{"대기 중", "삭제 됨", "승인", "빌려줌", "완료"};
 
     }
 
@@ -159,55 +168,50 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     public void setData() {
-        arrayList = new ArrayList<>();
-        // API fetch
-        // 1은 현재 그룹 번호로 바꿔줘야됨 수고
-        service.userSelfInfo(apikey, new Callback<User>() {
-            @Override
-            public void success(User user, Response response) {
-                photo = user.photo;
-                if (photo != null) {
-                    new DownloadImageTask(profilePhoto).execute(photo);
-                    Bitmap bitmap = ((BitmapDrawable) profilePhoto.getDrawable()).getBitmap();
-                    profilePhoto.setImageBitmap(getRoundedShape(bitmap));
-                } else Log.e("에러", "Error loading profile picture");
-            }
+        setData(false);
+    }
 
+    public void bindList() {
+        if(arrayList == null) return;
+        listAdapter =new DataAdapter(MainActivity.this, arrayList);
+        list.setAdapter(listAdapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void failure(RetrofitError error) {
-                Toast("세션이 만료됨, 다시 로그인하세요", 0);
-                Log.e("에러코드", "" + error.getResponse().getStatus());
-            }
-        });
-        service.articleList(1, 100000000, new Callback<List<Article>>() {
-            @Override
-            public void success(List<Article> articles, Response response) {
-                for (Article article : articles) {
-                    addDataToArrayList(article.id, (icon.length > article.category) ? icon[article.category] : icon[0], article.name, article.description, (article.type == 0) ? "빌림" : "교환");
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 0) {
+                    TextView textView = (TextView) view.findViewById(R.id.id_value);
+                    Intent viewIntent = new Intent(getApplicationContext(), ViewActivity.class);
+                    viewIntent.putExtra("ID", Integer.parseInt(textView.getText().toString()));
+                    startActivity(viewIntent);
                 }
-                list.setAdapter(new DataAdapter(MainActivity.this, arrayList));
-                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if (position != 0) {
-                            TextView textView = (TextView)view.findViewById(R.id.id_value);
-                            Intent viewIntent = new Intent(getApplicationContext(), ViewActivity.class);
-                            viewIntent.putExtra("ID", Integer.parseInt(textView.getText().toString()));
-                            startActivity(viewIntent);
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast("세션이 만료됨, 다시 로그인하세요", 0);
-                Log.e("에러코드", "" + error.getResponse().getStatus());
             }
         });
     }
 
-    public void setProfilePhoto() {
+    public void setData(final boolean append) {
+        if(!append) {
+            arrayList = new ArrayList<>();
+            bindList();
+        }
+        service.articleList(sharedPreferences.getInt("currentgroup",1), currentMax, new Callback<List<Article>>() {
+            @Override
+            public void success(List<Article> articles, Response response) {
+                for (Article article : articles) {
+                    currentMax = article.id;
+                    addDataToArrayList(article.id, (icon.length > article.category) ? icon[article.category] : icon[0], article.name, article.description, postType[article.type]);
+                }
+                swipyRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast("세션이 만료됨, 다시 로그인하세요", 0);
+                //Log.e("에러코드", "" + error.getResponse().getStatus());
+            }
+        });
+    }
+
+    public void setProfile() {
         // API fetch
         // 1은 현재 그룹 번호로 바꿔줘야됨 수고
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -232,6 +236,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         });
     }
+
     public void setNavigationBar() {
         navigtionBar = new ArrayList<>();
         navList = (ListView) findViewById(R.id.drawer_listview);
@@ -284,13 +289,51 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void setArrayList() {
         group_selector = (Spinner) findViewById(R.id.groupSelector);
         groupList = new ArrayList<>();
+        groupList2 = new ArrayList<Group>();
         service.groupSelfList(apikey, new Callback<List<Group>>() {
             @Override
             public void success(List<Group> groups, Response response) {
+                editor.putInt("currentgroup",groups.get(0).id);
+                editor.commit();
                 for (Group group : groups) {
                     groupList.add(group.name);
+                    groupList2.add(group);
                 }
                 group_selector.setAdapter(new ArrayAdapter<>(MainActivity.this, R.layout.select_dialog_item_material, groupList));
+                group_selector.setOnItemClickListener(new Spinner.OnItemClickListener() {
+                    @Override
+                    public boolean onItemClick(Spinner spinner, View view, int i, long l) {
+                        Group group = groupList2.get(i);
+                        editor.putInt("currentgroup",group.id);
+                        editor.commit();
+                        currentMax = 100000;
+                        setData();
+                        return true;
+                    }
+                });
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast("세션이 만료됨, 다시 로그인하세요", 0);
+                Log.e("에러코드", "" + error.getResponse().getStatus());
+            }
+        });
+        // API fetch
+        // 1은 현재 그룹 번호로 바꿔줘야됨 수고
+
+    }
+
+    public void setUserPhoto(){
+        service.userSelfInfo(apikey, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                photo = user.photo;
+                if (photo != null) {
+                    new DownloadImageTask(profilePhoto).execute(photo);
+                    Bitmap bitmap = ((BitmapDrawable) profilePhoto.getDrawable()).getBitmap();
+                    profilePhoto.setImageBitmap(getRoundedShape(bitmap));
+                } else Log.e("에러", "Error loading profile picture");
             }
 
             @Override
@@ -300,7 +343,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         });
     }
-
     public void Toast(String s, int length) {
         Toast.makeText(getApplicationContext(), s, (length == 0) ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG).show();
     }
@@ -329,7 +371,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     public void addDataToArrayList(int id, int icon, String title, String description, String confirm) {
-        arrayList.add(new CData(getApplicationContext(), id, icon, title, description, confirm));
+        listAdapter.add(new CData(getApplicationContext(), id, icon, title, description, confirm));
     }
 
     @Override
@@ -376,32 +418,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (mBackPressed + 2000 > System.currentTimeMillis()) {
-            super.onBackPressed();
-            android.os.Process.killProcess(android.os.Process.myPid());
-            return;
-        } else
-            Toast.makeText(getApplicationContext(), "다시 한번 누르면 종료됩니다", Toast.LENGTH_SHORT).show();
-        mBackPressed = System.currentTimeMillis();
-    }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        super.onBackPressed();
-        return true;
-    }
-
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         BillimMenu.collapse();
         floatMenuBackground.setVisibility(View.GONE);
-
+        savedPosition = list.getFirstVisiblePosition();
+        View firstVisibleView = list.getChildAt(0);
+        savedListTop = (firstVisibleView == null) ? 0 : firstVisibleView.getTop();
     }
+
     public void onResume() {
         super.onResume();
-        setData();
+        bindList();
         setArrayList();
+        if (savedPosition >= 0) { //initialized to -1
+            list.setSelectionFromTop(savedPosition, savedListTop);
         }
+    }
 }

@@ -1,0 +1,64 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EFEAE9"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/group_add_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="검색할 그룹 이름"
+                android:inputType="textNoSuggestions"
+                android:padding="5dp"
+                android:singleLine="true"
+                android:textColor="#8d6e63"
+                android:textCursorDrawable="@null"
+                app:et_dividerColor="#8d6e63"
+                app:et_labelPadding="5dp"
+                app:met_baseColor="#8d6e63"
+                app:met_errorColor="#FF282C"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAnimating="true"
+                app:met_floatingLabelText="검색할 그룹 이름"
+                app:met_primaryColor="#a1887f" />
+
+            <ImageView
+                android:id="@+id/group_add_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:src="@drawable/btn_search" />
+        </FrameLayout>
+
+        <ListView
+            android:id="@+id/group_add_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></ListView>
+    </LinearLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:id="@+id/group_add_float_button"
+        fab:fab_colorNormal="#6d4c41"
+        fab:fab_colorPressed="#8D6E63"
+        android:layout_gravity="bottom|right"
+        fab:fab_icon="@drawable/btn_trade_mini"
+        fab:fab_size="mini"
+        fab:fab_title="교환해요"
+        android:layout_height="wrap_content" />
+</FrameLayout>

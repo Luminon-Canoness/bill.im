@@ -93,12 +93,7 @@ public class MyPageActivity extends ActionBarActivity {
             @Override
             public void success(List<Group> groups, Response response) {
                 progressDialog.dismiss();
-                group = "";
-                for (Group group1 : groups) {
-                    group += group1.name.toString() + "\n";
-                }
-                group = group.trim();
-                arrayList.add(new MyPageData(getApplicationContext(), R.drawable.ic_group, group));
+                arrayList.add(new MyPageData(getApplicationContext(), R.drawable.ic_group, "그룹 삭제 혹은 추가"));
                 arrayList.add(new MyPageData(getApplicationContext(), R.drawable.ic_logout, "로그아웃"));
                 arrayList.add(new MyPageData(getApplicationContext(), R.drawable.ic_memberx, "회원탈퇴"));
 
@@ -109,6 +104,7 @@ public class MyPageActivity extends ActionBarActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         switch (position) {
                             case 1:
+                                startActivity( new Intent(MyPageActivity.this, GroupEditActivity.class));
                                 break;
                             case 2:
                                 final Dialog dialog = new Dialog(MyPageActivity.this);

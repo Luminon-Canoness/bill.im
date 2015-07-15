@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="#BDA7A1"
+    android:weightSum="10"
+    android:layout_height="match_parent">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="1dp" android:layout_weight="3"/>
+    <TextView
+        android:textSize="35dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="환영합니다."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Space
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+    <ImageView
+        android:src="@drawable/ic_welcome_hi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Space
+        android:layout_weight="1"
+        android:layout_height="1dp"
+        android:layout_width="match_parent"/>
+     <TextView
+         android:textColor="#FFF"
+         android:textSize="14dp"
+         android:gravity="center"
+         android:text="Bill.im은 학교나 직장 등의 단체 내에서\n물건을 서로 쉽게 빌리거나 교환할 수 있도록 도와주는 \n어플리케이션입니다"
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:layout_weight="3"/>
+</LinearLayout>

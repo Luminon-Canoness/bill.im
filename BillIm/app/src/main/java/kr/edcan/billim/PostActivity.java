@@ -1,15 +1,18 @@
 package kr.edcan.billim;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
@@ -18,12 +21,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import kr.edcan.billim.utils.Article;
 import kr.edcan.billim.utils.BillimService;
@@ -43,10 +50,12 @@ public class PostActivity extends ActionBarActivity {
     ImageView post_type_image;
     TextView post_type_text;
     Intent intent;
-    String shareType, picturePath, apikey, item_name, item_comment, item_place, item_reward;
+    String shareType, picturePath, apikey, item_name, item_comment, item_place, item_reward, string_path, finalPath;
     ImageView toGallery;//이미지뷰 선언
     private static int RESULT_LOAD_IMAGE = 1;
+    private static final int CAMERA_REQUEST = 1888;
     BillimService service;
+    ProgressDialog progressDialog ;
     int shareType_int, category;
 
     @Override
@@ -75,7 +84,7 @@ public class PostActivity extends ActionBarActivity {
     public void setDefault() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         intent = getIntent();
-        picturePath="";
+        picturePath = "";
         shareType_int = intent.getIntExtra("ShareType", -1);
         category = intent.getIntExtra("Type", -1);
         switch (shareType_int) {
@@ -155,7 +164,8 @@ public class PostActivity extends ActionBarActivity {
 
     public void setImage() {
         toGallery = (ImageView) findViewById(R.id.post_image); //이미지뷰 초기화
-        toGallery.setOnClickListener(new View.OnClickListener() {  //이미지뷰가 클릭되었을 때의 리스너
+        RelativeLayout r = (RelativeLayout)findViewById(R.id.click);
+        r.setOnClickListener(new View.OnClickListener() {  //이미지뷰가 클릭되었을 때의 리스너
             @Override
             public void onClick(View arg0) {
                 Intent i = new Intent(
@@ -163,6 +173,8 @@ public class PostActivity extends ActionBarActivity {
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 //안드로이드 시스템에 있는 이미지들에서 선택(PICK)을 위한 인텐트 생성
                 startActivityForResult(i, RESULT_LOAD_IMAGE);//위에서 선언한 1이라는 결과 코드로 액티비티를 선언
+//                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
     }
@@ -188,8 +200,11 @@ public class PostActivity extends ActionBarActivity {
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                     progressDialog = new ProgressDialog(PostActivity.this);
+                                    progressDialog.setTitle("업로드 중입니다");
+                                    progressDialog.show();
                                     setUpload();
-                                }
+                                 }
                             })
                     .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                         @Override
@@ -208,12 +223,9 @@ public class PostActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//startActivityForResult 에서 결과가 나왔을때 작동하는 메서드 입니다
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-// 리퀘스트코드가 RESULT_LOAD_IMAGE(1) 이고, 결과가 OK라는 성공값이며, 데이터가 존재할 때 작동합니다.
             Uri selectedImage = data.getData();
-// android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI   에서 받아온 데이터를 변수에 넣어준뒤
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
             Cursor cursor = getContentResolver().query(selectedImage,
                     filePathColumn, null, null, null);
@@ -224,15 +236,41 @@ public class PostActivity extends ActionBarActivity {
 //Uri에서 이미지의 외장 메모리상의 주소를 받아온 뒤
             cursor.close();
             toGallery.setImageBitmap(BitmapFactory.decodeFile(picturePath));//이미지뷰에 뿌려줍니다.
+        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            saveBitmaptoJpeg();
+            File imgFile = new  File(finalPath);
+            if(imgFile.exists()){
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                toGallery.setImageBitmap(myBitmap);
+            }
+            Log.e("Path", finalPath);
+            toGallery.setImageBitmap(photo);
         }
     }
-
+    public void saveBitmaptoJpeg(){
+        String[] projection = new String[]{
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.MIME_TYPE
+        };
+        final Cursor cursor = getContentResolver()
+                .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                        null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+        if (cursor.moveToFirst()) {
+            finalPath = cursor.getString(1);
+        }
+        picturePath = finalPath;
+    }
     public void setUpload() {
-        service.postArticle(apikey, 1, shareType_int, category, item_name, item_comment, item_reward, item_place,
+        service.postArticle(apikey, sharedPreferences.getInt("currentgroup",1), shareType_int, category, item_name, item_comment, item_reward, item_place,
                 (!picturePath.equals("")) ? new TypedFile("image/jpeg", new File(picturePath)) : null, new Callback<Article>() {
                     @Override
                     public void success(Article article, Response response) {
                         ShortToast("성공 " + response);
+                        progressDialog.dismiss();
                         finish();
                     }
 
@@ -245,9 +283,10 @@ public class PostActivity extends ActionBarActivity {
                     }
                 });
     }
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch(item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;

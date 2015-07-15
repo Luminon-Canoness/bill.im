@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:background="#EFEAE9"
@@ -11,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center_vertical"
-        android:text="빌려주기"
+        android:text="그룹 생성"
         android:textColor="#916C63"
         android:textSize="20dp" />
 
@@ -20,16 +21,28 @@
         android:layout_height="2dp"
         android:background="#d7ccc8"></LinearLayout>
 
-    <TextView
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
-        android:id="@+id/dialog_description"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/dialogDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:textSize="15dp"
-        android:text="해당 물건을 빌려주시겠습니까?\n빌려주기를 누르면 Bill.IM 이용 내역에서 상태를 확인할 수 있습니다."
-        android:textColor="#916C63" />
+        android:hint="생성할 그룹 이름 입력"
+        android:inputType="textNoSuggestions"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:textColor="#8d6e63"
+        android:textCursorDrawable="@null"
+        app:et_dividerColor="#8d6e63"
+        app:et_labelPadding="5dp"
+        app:met_baseColor="#8d6e63"
+        app:met_errorColor="#FF282C"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelAnimating="true"
+        app:met_floatingLabelText="생성할 그룹 이름"
+        app:met_primaryColor="#a1887f" />
 
     <RelativeLayout
         android:layout_marginRight="15dp"
@@ -39,7 +52,7 @@
         android:layout_height="wrap_content">
         <com.rey.material.widget.Button
             android:id="@+id/confirm_button"
-            android:text="빌려주기"
+            android:text="만들기"
             android:textSize="16dp"
             android:textColor="#6d4c41"
             android:background="@android:color/transparent"
