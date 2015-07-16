@@ -63,6 +63,7 @@ public class GroupAddActivity extends ActionBarActivity implements View.OnClickL
         setContentView(R.layout.activity_group_add);
         setDefault();
         activity = this;
+        setLoad();
     }
 
     public void setDefault() {
@@ -86,6 +87,9 @@ public class GroupAddActivity extends ActionBarActivity implements View.OnClickL
         search.setOnClickListener(this);
         floatingActionButton = (FloatingActionButton)findViewById(R.id.group_add_float_button);
         floatingActionButton.setOnClickListener(this);
+        floatingActionButton.setIcon(R.drawable.ic_addgroup);
+        floatingActionButton.setColorNormal(Color.parseColor("#6d4c41"));
+        floatingActionButton.setColorPressed(Color.parseColor("#8D6E63"));
     }
 
     @Override
@@ -174,7 +178,68 @@ public class GroupAddActivity extends ActionBarActivity implements View.OnClickL
                    startActivity(new Intent(getApplicationContext(), CustomDialog.class));
         }
     }
+    public void setLoad() {
+        String query = "";
+            Log.e("adsf", query);
+            service.searchGroup(query, new Callback<List<Group>>() {
+                @Override
+                public void success(List<Group> groups, Response response) {
+                    arrayList = new ArrayList<>();
+                    if (groups.size() != 0) {
+                        for (Group group : groups) {
+                            arrayList.add(new GroupAddData(getApplicationContext(), group.name, group.id));
+                        }
+                        GroupAddAdapter groupAddAdapter = new GroupAddAdapter(GroupAddActivity.this, arrayList);
+                        groupAddListView.setAdapter(groupAddAdapter);
+                        groupAddListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+                                addid = (TextView) view.findViewById(R.id.group_edit_id);
+                                groupname = (TextView) view.findViewById(R.id.group_edit_text);
+                                groupname_ = groupname.getText().toString();
+                                MaterialDialog materialDialog = new MaterialDialog.Builder(GroupAddActivity.this)
+                                        .title(groupname_)
+                                        .content("확인을 누르시면 그룹에 가입합니다.")
+                                        .positiveText("확인")
+                                        .negativeText("취소")
+                                        .callback(new MaterialDialog.ButtonCallback() {
+                                            @Override
+                                            public void onPositive(MaterialDialog dialog) {
+                                                super.onPositive(dialog);
+                                                int groupid = Integer.parseInt(addid.getText().toString());
+                                                service.joinGroup(apikey, groupid, new Callback<GroupResponse>() {
+                                                    @Override
+                                                    public void success(GroupResponse group, Response response) {
+                                                        Toast.makeText(getApplicationContext(), groupname_ + " 그룹에 추가되었습니다!", Toast.LENGTH_SHORT).show();
+                                                        finish();
+                                                    }
 
+                                                    @Override
+                                                    public void failure(RetrofitError error) {
+                                                        if (error.getResponse().getStatus() == 422) {
+                                                            Toast.makeText(getApplicationContext(), "이미 가입된 그룹입니다.", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            Log.e("Add error", error.getResponse().getStatus() + "");
+                                                            Toast.makeText(getApplicationContext(), "내부 오류가 발생하였습니다..", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }
+
+                                        })
+                                        .show();
+                            }
+                        });
+                    } else
+                        Toast.makeText(getApplicationContext(), "검색된 그룹이 없습니다!", Toast.LENGTH_SHORT).show();
+                }
+
+
+                @Override
+                public void failure(RetrofitError error) {
+                }
+            });
+    }
     class GroupAddAdapter extends ArrayAdapter<GroupAddData> {
         // 레이아웃 XML을 읽어들이기 위한 객체
         private LayoutInflater mInflater;

@@ -18,12 +18,7 @@
 
     <string-array name="category_array">
         <item>전체 보기</item>
-        <item>필기구</item>
-        <item>전자제품</item>
-        <item>음식 및 재료</item>
-        <item>의류</item>
-        <item>책 및 문서</item>
-        <item>기타</item>
+
     </string-array>
 
     <string name="title_activity_tutorial">TutorialActivity</string>

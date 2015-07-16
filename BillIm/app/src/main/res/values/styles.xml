@@ -41,6 +41,11 @@
         <item name="colorControlHighlight">#6d4c41</item>
         <item name="colorSwitchThumbNormal">#6d4c41</item>
     </style>
+    <style name="ViewTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#d7ccc8</item>
+        <item name="colorPrimaryDark">#a1887f</item>
+
+    </style>
 
     <style name="viewpagerActionbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- White arrow -->

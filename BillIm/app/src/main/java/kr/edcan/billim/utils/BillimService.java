@@ -71,5 +71,9 @@ public interface BillimService {
     @POST("/api/article/self/confirm")
     public void changePostState(@Field("apikey") String apikey, @Field("id") int id, Callback<List<Article>> callback);
 
+    @FormUrlEncoded
+    @POST("/api/article/self/delete")
+    public void deletePost(@Field("apikey") String apikey, @Field("id") int id, Callback<List<Article>> callback);
+
 
 }

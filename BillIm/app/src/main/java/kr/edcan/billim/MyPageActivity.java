@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.rey.material.app.Dialog;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.List;
 import kr.edcan.billim.utils.BillimService;
 import kr.edcan.billim.utils.DownloadImageTask;
 import kr.edcan.billim.utils.Group;
+import kr.edcan.billim.utils.GroupResponse;
 import kr.edcan.billim.utils.RoundImageView;
 import kr.edcan.billim.utils.User;
 import retrofit.Callback;
@@ -104,35 +106,48 @@ public class MyPageActivity extends ActionBarActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         switch (position) {
                             case 1:
-                                startActivity( new Intent(MyPageActivity.this, GroupEditActivity.class));
+                                startActivity(new Intent(MyPageActivity.this, GroupEditActivity.class));
                                 break;
                             case 2:
-                                final Dialog dialog = new Dialog(MyPageActivity.this);
-                                dialog.setTitle("로그아웃 하시겠습니까?");
-                                dialog.setCancelable(true);
-                                dialog.positiveAction("확인");
-                                dialog.negativeAction("취소");
-                                dialog.negativeActionClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                dialog.positiveActionClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        editor.remove("apikey");
-                                        editor.apply();
-                                        startActivity(new Intent(MyPageActivity.this, LoginActivity.class));
-                                        MainActivity.activity.finish();
-                                        finish();
-                                    }
-                                });
-                                dialog.show();
+                                MaterialDialog materialDialog = new MaterialDialog.Builder(MyPageActivity.this)
+                                        .title("로그아웃 하시겠습니끼?")
+                                        .content("확인을 누르시면 로그아웃합니다.")
+                                        .positiveText("확인")
+                                        .negativeText("취소")
+                                        .callback(new MaterialDialog.ButtonCallback() {
+                                            @Override
+                                            public void onPositive(MaterialDialog dialog) {
+                                                super.onPositive(dialog);
+                                                editor.remove("apikey");
+                                                editor.apply();
+                                                startActivity(new Intent(MyPageActivity.this, LoginActivity.class));
+                                                MainActivity.activity.finish();
+                                                finish();
+                                            }
+
+                                        })
+                                        .show();
                                 break;
                             case 3:
-                                Toast.makeText(getApplicationContext(), "잠시만요 이건 아직임", Toast.LENGTH_SHORT).show();
-                                break;
+                                MaterialDialog remove = new MaterialDialog.Builder(MyPageActivity.this)
+                                        .title("탈퇴하시겠습니끼?")
+                                        .content("확인을 누르시면 탈퇴합니다.")
+                                        .positiveText("확인")
+                                        .negativeText("취소")
+                                        .callback(new MaterialDialog.ButtonCallback() {
+                                            @Override
+                                            public void onPositive(MaterialDialog dialog) {
+                                                super.onPositive(dialog);
+                                                editor.remove("apikey");
+                                                editor.apply();
+                                                startActivity(new Intent(MyPageActivity.this, LoginActivity.class));
+                                                MainActivity.activity.finish();
+                                                finish();
+                                            }
+
+                                        })
+                                        .show();
+
                         }
                     }
                 });

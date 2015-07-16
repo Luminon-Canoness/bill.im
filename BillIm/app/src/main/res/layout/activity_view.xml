@@ -208,14 +208,44 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/view_confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:layout_margin="16dp"
-        fab:fab_colorNormal="#6d4c41"
-        fab:fab_colorPressed="#8D6E63"
-        fab:fab_icon="@drawable/btn_trade" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/float_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            fab:fab_addButtonColorNormal="#6d4c41"
+            fab:fab_addButtonColorPressed="#8D6E63"
+            fab:fab_addButtonStrokeVisible="true"
+            fab:fab_expandDirection="up"
+            fab:fab_labelStyle="@style/menu_labels_style"
+            fab:fab_labelsPosition="left">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/view_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="#6d4c41"
+                fab:fab_colorPressed="#8D6E63"
+                fab:fab_size="mini"
+                fab:fab_title="게시글 삭제" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/view_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                fab:fab_colorNormal="#6d4c41"
+                fab:fab_colorPressed="#8D6E63"
+                fab:fab_icon="@drawable/abc_btn_check_material"
+                fab:fab_size="mini"
+                fab:fab_title="상태 변경" />
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    </RelativeLayout>
 </FrameLayout>

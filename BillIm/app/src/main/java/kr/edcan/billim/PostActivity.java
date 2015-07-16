@@ -89,14 +89,14 @@ public class PostActivity extends ActionBarActivity {
         category = intent.getIntExtra("Type", -1);
         switch (shareType_int) {
             case 0: {
-                shareType = "빌림 - 요청";
-                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>빌려주세요!</b> </font>"));
+                shareType = "빌림 - 빌려줌";
+                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>빌려드려요!</b> </font>"));
                 name.setHint("빌릴 물건의 이름 입력");
                 break;
             }
             case 1: {
-                shareType = "빌림 - 빌려줌";
-                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>빌려드려요!</b> </font>"));
+                shareType = "빌림 - 빌림";
+                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>빌려주세요!</b> </font>"));
                 name.setHint("빌려줄 물건의 이름 입력");
                 break;
             }
@@ -108,7 +108,7 @@ public class PostActivity extends ActionBarActivity {
             }
             case 3: {
                 shareType = "교환";
-                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>드려요!</b> </font>"));
+                actionBar.setTitle(Html.fromHtml("<font color='#A4847E'><b>교환해요!</b> </font>"));
                 name.setHint("교환할 물건의 이름 입력");
                 break;
             }
@@ -269,7 +269,6 @@ public class PostActivity extends ActionBarActivity {
                 (!picturePath.equals("")) ? new TypedFile("image/jpeg", new File(picturePath)) : null, new Callback<Article>() {
                     @Override
                     public void success(Article article, Response response) {
-                        ShortToast("성공 " + response);
                         progressDialog.dismiss();
                         finish();
                     }

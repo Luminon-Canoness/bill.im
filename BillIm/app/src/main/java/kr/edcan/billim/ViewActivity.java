@@ -32,7 +32,7 @@ import retrofit.client.Response;
 public class ViewActivity extends ActionBarActivity implements View.OnClickListener{
 
     BillimService service;
-    FloatingActionButton Confirm;
+    FloatingActionButton Confirm, Delete;
     ImageView backButton, viewImage, report;
     Intent intent;
     int id;
@@ -71,6 +71,8 @@ public class ViewActivity extends ActionBarActivity implements View.OnClickListe
         report.setOnClickListener(this);
         backButton.setOnClickListener(this);
         Confirm = (FloatingActionButton)findViewById(R.id.view_confirm);
+        Delete = (FloatingActionButton)findViewById(R.id.view_delete);
+        Delete.setOnClickListener(this);
         Confirm.setOnClickListener(this);
     }
     public void setData(){
@@ -106,6 +108,7 @@ public class ViewActivity extends ActionBarActivity implements View.OnClickListe
                 if(article.state == 0) Confirm.setVisibility(View.VISIBLE);
                 if(article.state == 2 && article.author.id == myid) Confirm.setVisibility(View.VISIBLE);
                 if(article.state == 3 && article.responder != null && article.responder.id == myid) Confirm.setVisibility(View.VISIBLE);
+                if(article.state != 0 || article.author.id != myid) Delete.setVisibility(View.GONE);
             }
 
             @Override
@@ -123,7 +126,7 @@ public class ViewActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.btn_report :{
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("112"));
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:112"));
                 startActivity(intent);
                 break;
             }
@@ -217,7 +220,26 @@ public class ViewActivity extends ActionBarActivity implements View.OnClickListe
                             })
                             .show();
                 }
+                break;
             }
+            case R.id.view_delete:
+                service.deletePost(apikey, id, new Callback<List<Article>>() {
+                    @Override
+                    public void success(List<Article> articles, Response response) {
+                        Toast("게시글이 삭제되었습니다",0);
+                        finish();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        if(error.getResponse().getStatus()==200){
+                            Toast("게시글이 삭제되었습니다",0);
+                            finish();
+                        }
+                        else Log.e("asdf", error.getResponse().getStatus()+"");
+
+                    }
+                });
         }
     }
     @Override

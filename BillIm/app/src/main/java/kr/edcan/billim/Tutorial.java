@@ -55,6 +55,7 @@ public class Tutorial extends Activity {
                     public void onClick(View v) {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         startActivity(new Intent(getApplicationContext(), GroupAddActivity.class));
+                        finish();
                     }
                 });
             }
