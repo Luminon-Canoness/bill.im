@@ -132,6 +132,7 @@ public class ViewActivity extends ActionBarActivity implements View.OnClickListe
             }
             case R.id.view_back_button:{
                 finish();
+                break;
             }
             case R.id.view_confirm:{
                 if(currentArticle.state == 0) {

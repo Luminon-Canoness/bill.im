@@ -138,11 +138,25 @@ public class MyPageActivity extends ActionBarActivity {
                                             @Override
                                             public void onPositive(MaterialDialog dialog) {
                                                 super.onPositive(dialog);
-                                                editor.remove("apikey");
-                                                editor.apply();
-                                                startActivity(new Intent(MyPageActivity.this, LoginActivity.class));
-                                                MainActivity.activity.finish();
-                                                finish();
+                                                service.deleteUser(apikey, new Callback<User>() {
+                                                    @Override
+                                                    public void success(User o, Response response) {
+                                                        editor.remove("apikey");
+                                                        editor.apply();
+                                                        startActivity(new Intent(MyPageActivity.this, LoginActivity.class));
+                                                        MainActivity.activity.finish();
+                                                        finish();
+                                                    }
+
+                                                    @Override
+                                                    public void failure(RetrofitError error) {
+                                                        editor.remove("apikey");
+                                                        editor.apply();
+                                                        startActivity(new Intent(MyPageActivity.this, LoginActivity.class));
+                                                        MainActivity.activity.finish();
+                                                        finish();
+                                                    }
+                                                });
                                             }
 
                                         })

@@ -23,6 +23,10 @@ public interface BillimService {
     public void logout(@Field("apikey") String apikey, Callback callback);
 
     @FormUrlEncoded
+    @POST("/api/user/self/delete")
+    public void deleteUser(@Field("apikey") String apikey, Callback<User> callback);
+
+    @FormUrlEncoded
     @POST("/api/user/self/info")
     public void userSelfInfo(@Field("apikey") String apikey, Callback<User> callback);
 
