@@ -2,8 +2,7 @@ package kr.edcan.billim;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
+importimport android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SelectActivity extends Activity{
+public void SelectActivity extends Activity{
 
     int shareType;
     ListView listView;
